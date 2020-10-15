@@ -1,1 +1,1 @@
-# 11ty-webpack
+# Eleventy/Webpack Boilerplate

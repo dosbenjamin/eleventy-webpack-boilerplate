@@ -185,20 +185,18 @@ const config = {
       <meta name="twitter:card" content="summary_large_image">`
     })
 
-    // eleventyConfig.addShortcode('preloadFonts', () => {
-      // const addToTemplate = font => template += `<link
-        // rel="preload" href="/assets/fonts/${font}"
-        // as="font" type="font/woff2"
-        // crossorigin="anonymous">
-      // </link>`
-      // let template = ''
-      // const fonts = fs.readdirSync('public/assets/fonts')
-      // for (const font of fonts) {
-        // const { extension } = splitPath(font)
-        // extension === 'woff' && addToTemplate(font)
-      // }
-      // return template
-    // })
+    eleventyConfig.addShortcode('preloadFonts', () => {
+      const toHtml = font => `<link
+        rel="preload" href="/assets/fonts/${font}"
+        as="font" type="font/woff2"
+        crossorigin="anonymous">
+      </link>`
+      try {
+        const fonts = fs.readdirSync('public/assets/fonts')
+        const htmlTags = fonts.filter(font => font.endsWith('.woff2')).map(font => toHtml(font))
+        return htmlTags.join('')
+      } catch (error) {}
+    })
 
     eleventyConfig.addTransform('posthtml', async (content, outputPath) => {
       const file = await path.resolve('.posthtmlrc.js')

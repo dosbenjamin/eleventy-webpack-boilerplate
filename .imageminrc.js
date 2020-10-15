@@ -4,7 +4,7 @@ const imageminPngquant = require('imagemin-pngquant')
 const imageminSvgo = require('imagemin-svgo')
 const imageminGifsicle = require('imagemin-gifsicle')
 
-imagemin(['public/**/*.{jpg,png,webp,svg,gif}'], {
+imagemin(['public/**/*.{jpg,jpeg,png,svg,gif}'], {
   use: [
     imageminMozjpeg({ quality: 70, progressive: true }),
     imageminPngquant({ quality: [0.65, 0.8] }),

@@ -23,7 +23,7 @@ const {
   APP_FAVICON
 } = process.env
 
-const isDev = APP_ENV === 'development'
+const isProd = APP_ENV === 'production'
 
 const filename = { development: '[name]', production: '[name].[contenthash:8]' }
 
@@ -48,9 +48,7 @@ const getAssets = () => {
 const { entryFiles, images } = getAssets()
 
 // TODO: Service Worker -> Which files ??
-// TODO: Preload fonts
 // TODO: PostCSS only on production.
-// TODO: Inject css filename in htaccess for server push.
 // TODO: Writing readme.md & clean package.json
 
 const config = {
@@ -192,10 +190,11 @@ const config = {
         templateContent: `<head>
           <meta charset="UTF-8">
           <meta name="viewport" content="width=device-width, initial-scale=1.0">
-          <title>{{ title }} ${APP_TITLE_DIVIDER} ${APP_TITLE}</title>
-          <meta name="description" content="{{ description }}">
+          ${isProd ? '{% preloadFonts \'\' %}' : ''}
           <link href="{{ '/assets/css/main.css' | getPath }}" rel="stylesheet">
           <script defer src="{{ '/assets/js/main.js' | getPath }}"></script>
+          <title>{{ title }} ${APP_TITLE_DIVIDER} ${APP_TITLE}</title>
+          <meta name="description" content="{{ description }}">
           ${head[APP_ENV]}
         </head>`,
         filename: path.resolve('src/views/includes/head.njk'),
@@ -206,7 +205,7 @@ const config = {
       new ExcludeAssetsPlugin(),
       new SpritePlugin({
         publicPath: '/',
-        filename: isDev ? 'assets/images/sprite.svg' : 'assets/images/sprite.[contenthash:8].svg',
+        filename: isProd ? 'assets/images/sprite.[contenthash:8].svg' : 'assets/images/sprite.svg',
         spriteType: 'stack'
       })
     ]
