@@ -3,13 +3,13 @@
 This boilerplate is a ready-to-go front-end workflow to start a new project using the static generator [Eleventy](https://www.11ty.dev) and [Webpack](https://webpack.js.org) to bundle assets.
 Originally built for a personal use, the project is strongly opinionated but feel free to use and modify it.
 
-## Get started
+## Get started 🎉
 
 ### Installation 📦
-1. `git clone https://github.com/dosbenjamin/eleventy-webpack-boilerplate` <br>
-2.  `npm install`
+1. `git clone https://github.com/dosbenjamin/eleventy-webpack-boilerplate`
+2. `npm install`
 
-### Setting up the project 🔧
+### Set up the project 🔧
 Modify the remote url to use with your own GitHub account. <br>
 `git remote set-url origin git@github.com:USERNAME/REPOSITORY.git` <br>
 ⚠️ You need an SSH key for this. <br>
@@ -27,14 +27,51 @@ APP_BASE_URL = 'https://example.com'
 APP_COLOR = '#fff'
 APP_FAVICON = 'favicon.png'
 ```
-⚠️ Don't forget to rename `.env.example` to `.env` !
+⚠️ Don't forget to rename `.env.example` into `.env` !
 
-## Features 🔥
-•
-• Add resources hint preload in html to preload WOFF2 fonts <br>
-• Optimize images and convert JPG & PNG to WEBP
+## Features ✨
+- Cache busting all the assets files
+- Compile SCSS files into CSS
+- Convert SVG files used in CSS into `sprite.svg`
+- Copy `robots.txt` to `public` folder
+- Copy `.htaccess` to `public` folder
+- Generate `manifest.webmanifest`, `browserconfig.xml`, favicons and inject it inside html
+- Generate `sitemap.xml`
+- Inject resources hint in HTML to preload WOFF2 fonts
+- Inject CSS path in `.htaccess` for HTTP/2 Server Push
+- Minify HTML using PostHTML
+- Optimize and minify CSS with PostCSS
+- Optimize images and convert JPG & PNG to WEBP
+- Transpile JavaScript using Babel and optimize it
+
+## Eleventy filters
+### GetPath
+*Input*
+```html
+<link href="{{ '/assets/css/main.css' | getPath }}" rel="stylesheet" />
+```
+*Output*
+```html
+<link href="/assets/css/main.f3ef3fdf.css" rel="stylesheet" />
+```
+
+### Resize
+*Input*
+```html
+<img src="{{ '/assets/images/maxou.jpg' | resize(200) }}" alt="Maxime at the beach">
+```
+*Output*
+```html
+<img src="maxou-200.dk9d65d1.jpg" alt="Maxime at the beach">
+```
 
 ## Commands 🚀
-• `npm run clean`: clean `public` folder <br>
-• `npm run serve`: lint, watch and build and on files changes <br>
-• `npm run build`: lint and build in `public` folder for production
+- `npm run clean`: clean `public` folder
+- `npm run build`: lint and build in `public` folder for production
+- `npm run serve`: lint, watch and build and on files changes
+
+## To-do
+- [] Service worker
+- [] Cleaning package.json
+
+## Resources
