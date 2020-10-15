@@ -1,4 +1,4 @@
-![alt text](https://i.ibb.co/289wDTT/11ty-webpack.png "Logo Title Text 1")
+![alt text](https://i.ibb.co/f1NkDKP/11ty-webpack.png "Eleventy/Webpack Boilerplate Image")
 
 # Eleventy/Webpack Boilerplate 🙈
 
@@ -12,13 +12,15 @@ Originally built for a personal use, the project is strongly opinionated but fee
 2. `npm install`
 
 ### Set up the project 🔧
+### Link to your GitHub
 Modify the remote url to use with your own GitHub account. <br>
+
 `git remote set-url origin git@github.com:USERNAME/REPOSITORY.git` <br>
-⚠️ You need an SSH key for this. <br>
-[Guide to generate an SSH key](https://docs.github.com/en/enterprise-server@2.20/github/authenticating-to-github/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent)
+
+⚠️ You need an SSH key for this → [Guide to generate an SSH key](https://docs.github.com/en/enterprise-server@2.20/github/authenticating-to-github/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent)
 
 
-#### Edit environnement variables `.env` ✏️
+### Edit environnement variables ✏️
 These variables are use across pages, configuration files and editable in `.env` file.
 ```
 APP_TITLE = 'My new 11ty website'
