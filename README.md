@@ -16,7 +16,7 @@ Modify the remote url to use with your own GitHub account. <br>
 
 `git remote set-url origin git@github.com:USERNAME/REPOSITORY.git` <br>
 
-⚠️ You need an SSH key for this → [Guide to generate an SSH key](https://docs.github.com/en/enterprise-server@2.20/github/authenticating-to-github/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent)
+⚠️ You need a SSH key for this → [How to generate a SSH key](https://docs.github.com/en/enterprise-server@2.20/github/authenticating-to-github/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent)
 
 
 ### Edit environnement variables ✏️
@@ -36,7 +36,7 @@ APP_FAVICON = 'favicon.png'
 - Browserslist set to *defaults*
 - Cache busting all the assets files
 - Compile `*.scss` files into a single `main.css` file
-- Convert `*.svg` files used in CSS into `sprite.svg`
+- Convert `*.svg` files used in `*.scss` into `sprite.svg`
 - Copy `robots.txt` to `public` folder
 - Copy `.htaccess` to `public` folder
 - Generate favicons, `manifest.webmanifest`, `browserconfig.xml` and inject them inside html
@@ -44,12 +44,13 @@ APP_FAVICON = 'favicon.png'
 - Inject `main.css` path in `.htaccess` for HTTP/2 Server Push
 - Inject resources hint in `*.html` to preload `*.woff2` fonts
 - Inject SEO meta tags (Twitter and Open Graph) in `*.html`
-- Minify `*.html` using PostHTML (check `.posthtmlrc.js`)
-- Optimize and minify `main.css` with PostCSS (check `.postcssrc.js`)
+- Minify and transform `*.html` with [PostHTML](https://posthtml.org/) (check `.posthtmlrc.js`)
+- Minify `main.js` with [Terser](https://github.com/terser/terser)
+- Optimize, prefix and minify `main.css` with [PostCSS](https://postcss.org) (check `.postcssrc.js`)
 - Optimize images and convert `*.jpg` & `*.png` to `*.webp` (check `.imageminrc.js`)
-- Precompress files with Brotli and Gzip (Zopfli)
-- Transpile and optimize `*.js` into a single `main.js` using Babel (check `.babelrc.js`)
-- Use Nunjucks `.njk` as templating engine
+- Precompress files with [Brotli](https://github.com/google/brotli) and [Gzip](https://www.gzip.org) ([Zopfli](https://github.com/google/zopfli))
+- Transpile and optimize `*.js` into a single `main.js` with [Babel](https://babeljs.io) (check `.babelrc.js`)
+- Use [Nunjucks](https://mozilla.github.io/nunjucks/) `.njk` as templating engine
 - Use [sanitize.css](https://csstools.github.io/sanitize.css) as reset
 
 ## Eleventy filters 🔍
