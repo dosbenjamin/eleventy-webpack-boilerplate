@@ -39,7 +39,7 @@ APP_FAVICON = 'favicon.png'
 - Convert `*.svg` files used in CSS into `sprite.svg`
 - Copy `robots.txt` to `public` folder
 - Copy `.htaccess` to `public` folder
-- Generate favicons, `manifest.webmanifest`, `browserconfig.xml` and inject it inside html
+- Generate favicons, `manifest.webmanifest`, `browserconfig.xml` and inject them inside html
 - Generate `sitemap.xml` and paste it in `public`
 - Inject `main.css` path in `.htaccess` for HTTP/2 Server Push
 - Inject resources hint in `*.html` to preload `*.woff2` fonts
@@ -83,8 +83,8 @@ APP_FAVICON = 'favicon.png'
 ```
 #### `Output`
 ```html
-<img src="maxou-200.dk9d65d1.jpg" alt="Maxime at the beach">
-<img src="maxou-600.kj4kf923.webp" alt="Maxime at the beach">
+<img src="/assets/images/maxou-200.dk9d65d1.jpg" alt="Maxime at the beach">
+<img src="/assets/images/maxou-600.kj4kf923.webp" alt="Maxime at the beach">
 ```
 *Note<sup>1</sup>: `*.webp` versions are always generated even if you don't ask for it in `*.njk`* <br>
 *Note<sup>2</sup>: Resize is not available for `*.gif`*
