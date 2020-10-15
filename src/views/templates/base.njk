@@ -1,0 +1,46 @@
+---
+
+thumbnail: /assets/images/thumbnail.png
+type: website
+description: A great description for my super website.
+
+---
+
+<!doctype html>
+<html lang="en">
+
+  {% include 'head.njk' %}
+
+  <body>
+
+    {{ content | safe }}
+
+      <img src="{{ '/assets/images/thumbnail.png' | resize(300) }}" alt="Alt Text!">
+
+      <img src="{{ '/assets/images/thumbnail.png' | getPath }}" alt="Alt Text!">
+      <img src="{{ '/assets/images/thumbnail.webp' | resize(200) }}" alt="Alt Text!">
+      {# <img src="{{ '/assets/images/thumbnail.webp' | resize(100) }}" alt="Alt Text!"> #}
+      {# <img src="{{ '/assets/images/thumbnail.webp' | getPath }}" alt="Alt Text!"> #}
+      {# <img src="{{ '/assets/images/thumbnail.webp' | resize(110) }}" alt="Alt Text!"> #}
+      {# <img src="{{ '/assets/images/thumbnail.webp' | resize(120) }}" alt="Alt Text!"> #}
+      {# <img src="{{ '/assets/images/thumbnail.webp' | resize(1200) }}" alt="Alt Text!"> #}
+      {# <img src="{{ '/assets/images/thumbnail.webp' | getPath }}" alt="Alt Text!"> #}
+      <img src="{{ '/assets/images/thumbnail.png' | resize(200) }}" alt="Alt Text!">
+      <img src="{{ '/assets/images/ours.gif' | getPath }}" alt="Alt Text!">
+      {# <img src="{{ '/assets/images/ours.gif' | getPath }}" alt="Alt Text!"> #}
+
+      {# <video src="{{ '/assets/videos/constantesans1.mp4' | getPath }}"></video> #}
+
+      <div></div>
+
+      <span></span>
+
+    {# <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => navigator.serviceWorker.register('/sw.js'))
+      }
+    </script> #}
+
+  </body>
+
+</html>

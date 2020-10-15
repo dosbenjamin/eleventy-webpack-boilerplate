@@ -1,7 +1,8 @@
+// TODO: Try, test and clean postcss plugins.
+
 module.exports = {
   plugins: {
     autoprefixer: {},
-    'postcss-normalize': { forceImport: 'sanitize.css' },
     '@fullhuman/postcss-purgecss': {
       content: ['./src/**/*.njk', './src/**/*.js']
     },

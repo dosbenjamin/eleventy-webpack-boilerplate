@@ -1,33 +1,62 @@
 const path = require('path')
+const fs = require('fs')
 const { merge } = require('webpack-merge')
 
 const TerserPlugin = require('terser-webpack-plugin')
 const globImporter = require('node-sass-glob-importer')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
-const WebpackAssetsManifest = require('webpack-assets-manifest')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const ExcludeAssetsPlugin = require('@ianwalter/exclude-assets-plugin')
 const WebpackPluginPWAManifest = require('webpack-plugin-pwa-manifest')
 const HtmlReplaceWebpackPlugin = require('html-replace-webpack-plugin')
-const StylelintPlugin = require('stylelint-webpack-plugin')
-const ESLintPlugin = require('eslint-webpack-plugin')
+const ImageMinimizerPlugin = require('image-minimizer-webpack-plugin')
+const SpritePlugin = require('extract-svg-sprite-webpack-plugin')
+const CopyPlugin = require('copy-webpack-plugin')
 
 require('dotenv').config()
-const env = process.env.APP_ENV
+const {
+  APP_ENV,
+  APP_TITLE,
+  APP_SHORT_TITLE,
+  APP_TITLE_DIVIDER,
+  APP_COLOR,
+  APP_FAVICON
+} = process.env
 
-const filename = {
-  development: '[name]',
-  production: '[name].[contenthash:8]'
-}
+const isDev = APP_ENV === 'development'
+
+const filename = { development: '[name]', production: '[name].[contenthash:8]' }
+
 const head = {
-  development: `<title>{{ title }} ${process.env.APP_TITLE_DIVIDER} ${process.env.APP_TITLE}</title>
-  <link rel="icon" type="image/png" href="/assets/images/${process.env.APP_FAVICON}">`,
+  development: `<link rel="icon" href="/${APP_FAVICON}">`,
   production: '{% headTags title, description, thumbnail, page.url, type %}'
 }
 
+const getAssets = () => {
+  const entryFiles = ['./src/assets/js/main.js', './src/assets/scss/main.scss']
+  const exclude = ['import', '.keep', '.DS_Store']
+  const loadAssets = folder => {
+    const assets = fs.readdirSync(folder).filter(item => !exclude.includes(item))
+    entryFiles.push(...assets.map(asset => folder + asset))
+    return assets
+  }
+  const images = loadAssets('./src/assets/images/')
+  loadAssets('./src/assets/videos/')
+  return { images, entryFiles }
+}
+
+const { entryFiles, images } = getAssets()
+
+// TODO: Service Worker -> Which files ??
+// TODO: Preload fonts
+// TODO: PostCSS only on production.
+// TODO: Inject css filename in htaccess for server push.
+// TODO: Writing readme.md & clean package.json
+
 const config = {
   development: {
-    devtool: 'source-map'
+    devtool: 'source-map',
+    plugins: [new CopyPlugin({ patterns: [{ from: `src/${APP_FAVICON}`, to: `${APP_FAVICON}` }] })]
   },
 
   production: {
@@ -38,11 +67,7 @@ const config = {
           test: /\.js(\?.*)?$/i,
           cache: true,
           parallel: true,
-          terserOptions: {
-            output: {
-              comments: false
-            }
-          }
+          terserOptions: { output: { comments: false } }
         })
       ],
       usedExports: true,
@@ -50,13 +75,13 @@ const config = {
     },
     plugins: [
       new WebpackPluginPWAManifest({
-        name: process.env.APP_TITLE,
-        shortName: process.env.APP_TITLE,
+        name: APP_TITLE,
+        shortName: APP_SHORT_TITLE,
         display: 'minimal-ui',
         startURL: '/',
-        theme: process.env.APP_COLOR,
+        theme: APP_COLOR,
         generateIconOptions: {
-          baseIcon: `./src/assets/images/${process.env.APP_FAVICON}`,
+          baseIcon: `./src/${APP_FAVICON}`,
           sizes: [192, 512],
           genFavicons: true
         }
@@ -64,30 +89,24 @@ const config = {
       new HtmlReplaceWebpackPlugin([
         {
           pattern: '/browserconfig.xml',
-          replacement: '{{ \'/browserconfig.xml\' | hashFile(\'public\') }}'
+          replacement: '{{ \'/browserconfig.xml\' | hash }}'
         },
         {
           pattern: '/manifest.webmanifest',
-          replacement: '{{ \'/manifest.webmanifest\' | hashFile(\'public\') }}'
+          replacement: '{{ \'/manifest.webmanifest\' | hash }}'
         }
-      ]),
-      new StylelintPlugin(),
-      new ESLintPlugin()
+      ])
     ]
   },
 
   common: {
-    mode: env,
-    entry: {
-      main: ['./src/assets/js/main.js', './src/assets/scss/main.scss']
-    },
+    mode: APP_ENV,
+    entry: { main: entryFiles },
     output: {
       path: path.resolve('public'),
-      filename: `assets/js/${filename[env]}.js`
+      filename: `assets/js/${filename[APP_ENV]}.js`
     },
-    stats: {
-      children: false
-    },
+    stats: { children: false },
     module: {
       rules: [
         {
@@ -101,6 +120,7 @@ const config = {
             MiniCssExtractPlugin.loader,
             'css-loader',
             'postcss-loader',
+            SpritePlugin.cssLoader,
             {
               loader: 'sass-loader',
               options: {
@@ -112,28 +132,54 @@ const config = {
             }
           ]
         },
+        { test: /\.svg$/, loader: SpritePlugin.loader },
         {
-          test: /\.(png|jpe?g|gif|svg|webp)$/i,
+          test: /\.(png|jpe?g|gif|webp)$/i,
           use: [
             {
               loader: 'file-loader',
               options: {
-                outputPath: 'assets',
-                name: `images/${filename[env]}.[ext]`,
-                publicPath: '../'
+                publicPath: '/',
+                name: `assets/images/${filename[APP_ENV]}.[ext]`
               }
             }
           ]
         },
         {
-          test: /\.(woff?2|otf|ttf|eot)$/i,
+          test: /\.(png|jpe?g)$/i,
+          use: [
+            {
+              loader: ImageMinimizerPlugin.loader,
+              options: {
+                cache: true,
+                deleteOriginalAssets: false,
+                filename: 'assets/images/[name].webp',
+                filter: (source, sourcePath) => images.some(img => sourcePath.includes(img)),
+                minimizerOptions: { plugins: [['imagemin-webp', { quality: 80 }]] }
+              }
+            }
+          ]
+        },
+        {
+          test: /\.(mp4|webm)$/i,
           use: [
             {
               loader: 'file-loader',
               options: {
-                outputPath: 'assets',
-                name: `fonts/${filename[env]}.[ext]`,
-                publicPath: '../'
+                publicPath: '/',
+                name: `assets/videos/${filename[APP_ENV]}.[ext]`
+              }
+            }
+          ]
+        },
+        {
+          test: /\.(woff|woff2|otf|ttf|eot)$/i,
+          use: [
+            {
+              loader: 'file-loader',
+              options: {
+                publicPath: '/',
+                name: `assets/fonts/${filename[APP_ENV]}.[ext]`
               }
             }
           ]
@@ -141,28 +187,30 @@ const config = {
       ]
     },
     plugins: [
-      new MiniCssExtractPlugin({
-        filename: `assets/css/${filename[env]}.css`
-      }),
-      new WebpackAssetsManifest({
-        output: path.resolve('src/views/data/assets.json')
-      }),
+      new MiniCssExtractPlugin({ filename: `assets/css/${filename[APP_ENV]}.css` }),
       new HtmlWebpackPlugin({
         templateContent: `<head>
           <meta charset="UTF-8">
           <meta name="viewport" content="width=device-width, initial-scale=1.0">
-          ${head[env]}
-          <script defer src="{{ 'main.js' | assetPath }}"></script>
-          <link href="{{ 'main.css' | assetPath }}" rel="stylesheet">
+          <title>{{ title }} ${APP_TITLE_DIVIDER} ${APP_TITLE}</title>
+          <meta name="description" content="{{ description }}">
+          <link href="{{ '/assets/css/main.css' | getPath }}" rel="stylesheet">
+          <script defer src="{{ '/assets/js/main.js' | getPath }}"></script>
+          ${head[APP_ENV]}
         </head>`,
         filename: path.resolve('src/views/includes/head.njk'),
         minify: false,
         excludeAssets: [/\.js/, /\.css/],
         cache: true
       }),
-      new ExcludeAssetsPlugin()
+      new ExcludeAssetsPlugin(),
+      new SpritePlugin({
+        publicPath: '/',
+        filename: isDev ? 'assets/images/sprite.svg' : 'assets/images/sprite.[contenthash:8].svg',
+        spriteType: 'stack'
+      })
     ]
   }
 }
 
-module.exports = merge(config.common, config[env])
+module.exports = merge(config.common, config[APP_ENV])

@@ -6,6 +6,7 @@ module.exports = {
     'stylelint-a11y',
     'stylelint-high-performance-animation'
   ],
+  ignoreFiles: ['**/*.svg', 'public/**/*.css'],
   extends: 'stylelint-config-standard',
   rules: {
     'at-rule-no-unknown': null,
@@ -33,12 +34,7 @@ module.exports = {
     'selector-max-universal': 1,
     'font-weight-notation': 'numeric',
     'function-url-no-scheme-relative': true,
-    'plugin/no-unsupported-browser-features': [
-      true,
-      {
-        severity: 'warning'
-      }
-    ],
+    'plugin/no-unsupported-browser-features': [true, { severity: 'warning' }],
     'plugin/declaration-block-no-ignored-properties': true,
     'sh-waqar/declaration-use-variable': [['/color/', 'font-size']],
     'a11y/no-outline-none': true,

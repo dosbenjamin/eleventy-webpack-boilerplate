@@ -1,3 +1,10 @@
+// Sanitize CSS
+@import '~sanitize.css/sanitize';
+@import '~sanitize.css/typography';
+@import '~sanitize.css/assets';
+@import '~sanitize.css/reduce-motion';
+
+// Custom Files
 @import '01-settings/**/*';
 @import '02-tools/**/*';
 @import '03-generic/**/*';
