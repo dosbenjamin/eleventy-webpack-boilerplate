@@ -3,7 +3,7 @@
 # Eleventy/Webpack Boilerplate 🙈
 
 This boilerplate is a ready-to-go front-end workflow to start a new project using the static site generator [Eleventy](https://www.11ty.dev) and [Webpack](https://webpack.js.org) to bundle assets.
-Originally built for a personal use, the project is strongly opinionated but feel free to use and modify it.
+Originally built for a personal use, the project is very opinionated and is focus on SEO, performance and accessibility. Feel free to use and modify.
 
 ## Get started 🎉
 
@@ -11,7 +11,7 @@ Originally built for a personal use, the project is strongly opinionated but fee
 1. `git clone https://github.com/dosbenjamin/eleventy-webpack-boilerplate`
 2. `npm install`
 
-### Link to your GitHub
+### Link to your GitHub 🔧
 Modify the remote url to use with your own GitHub account. <br>
 
 `git remote set-url origin git@github.com:USERNAME/REPOSITORY.git` <br>
@@ -33,6 +33,7 @@ APP_FAVICON = 'favicon.png'
 ⚠️ Don't forget to rename `.env.example` into `.env` !
 
 ## Features ✨
+- Browserslist set to *defaults*
 - Cache busting all the assets files
 - Compile `*.scss` files into a single `main.css` file
 - Convert `*.svg` files used in CSS into `sprite.svg`
@@ -43,15 +44,17 @@ APP_FAVICON = 'favicon.png'
 - Inject `main.css` path in `.htaccess` for HTTP/2 Server Push
 - Inject resources hint in `*.html` to preload `*.woff2` fonts
 - Inject SEO meta tags (Twitter and Open Graph) in `*.html`
-- Minify `*.html` using PostHTML
-- Optimize and minify `main.css` with PostCSS
-- Optimize images and convert `*.jpg` & `*.png` to `*.webp`
-- Transpile and optimize `*.js` into a single `main.js` using Babel
+- Minify `*.html` using PostHTML (check `.posthtmlrc.js`)
+- Optimize and minify `main.css` with PostCSS (check `.postcssrc.js`)
+- Optimize images and convert `*.jpg` & `*.png` to `*.webp` (check `.imageminrc.js`)
+- Precompress files with Brotli and Gzip (Zopfli)
+- Transpile and optimize `*.js` into a single `main.js` using Babel (check `.babelrc.js`)
 - Use Nunjucks `.njk` as templating engine
+- Use [sanitize.css](https://csstools.github.io/sanitize.css) as reset
 
-## Eleventy filters
+## Eleventy filters 🔍
 
-### GetPath
+### GetPath 🗃
 #### `Input`
 ```html
 <link href="{{ '/assets/css/main.css' | getPath }}" rel="stylesheet" />
@@ -70,9 +73,9 @@ APP_FAVICON = 'favicon.png'
   <source src="/assets/videos/matteo-singing.po0820qn.mp4" type="video/mp4">
 </video>
 ```
-*Note: Can be use for any file that will be in `public` folder*
+*Note: Can be use for any file that will be in `public`*
 
-### Resize
+### Resize 📏
 #### `Input`
 ```html
 <img src="{{ '/assets/images/maxou.jpg' | resize(200) }}" alt="Maxime at the beach">
@@ -83,27 +86,19 @@ APP_FAVICON = 'favicon.png'
 <img src="maxou-200.dk9d65d1.jpg" alt="Maxime at the beach">
 <img src="maxou-600.kj4kf923.webp" alt="Maxime at the beach">
 ```
-*Note 1: `*.webp` versions are always generated even if you don't ask for it in `*.njk`* <br>
-*Note 2: Resize is not available for `*.gif`*
+*Note<sup>1</sup>: `*.webp` versions are always generated even if you don't ask for it in `*.njk`* <br>
+*Note<sup>2</sup>: Resize is not available for `*.gif`*
 
 ## Commands 🚀
 - `npm run clean`: clean `public` folder
 - `npm run build`: lint and build in `public` folder for production
 - `npm run serve`: lint, watch and build and on files changes
 
-## Coding Style
-- JavaScript Standard
+## Coding Style 🎨
+- JavaScript Standard (check `.eslintrc.js`)
 - Stylelint Standard + Custom (check `.stylelintrc.js`)
 
-## To-do
+## To-do 🚧
 - [ ] Service worker
-- [ ] Cleaning package.json
-- [ ] Readme
-
-## Resources
-[Eleventy](https://www.11ty.dev)
-[Eleventy](https://www.11ty.dev)
-[Eleventy](https://www.11ty.dev)
-[Eleventy](https://www.11ty.dev)
-[Eleventy](https://www.11ty.dev)
-[Webpack](https://webpack.js.org)
+- [ ] Cleaning `package.json`
+- [ ] Writing `readme.md`
