@@ -1,3 +1,5 @@
+// !! OK
+
 const imagemin = require('imagemin-keep-folder')
 const imageminMozjpeg = require('imagemin-mozjpeg')
 const imageminPngquant = require('imagemin-pngquant')

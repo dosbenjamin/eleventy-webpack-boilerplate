@@ -1,19 +1,12 @@
-// TODO: Try, test and clean postcss plugins.
+// !! OK
 
 module.exports = {
   plugins: {
-    autoprefixer: {},
-    '@fullhuman/postcss-purgecss': {
-      content: ['./src/**/*.njk', './src/**/*.js']
-    },
-    'postcss-sort-media-queries': {
-      sort: 'mobile-first'
-    },
+    '@fullhuman/postcss-purgecss': { content: ['./src/**/*.njk', './src/**/*.js'] },
+    'postcss-combine-duplicated-selectors': { removeDuplicatedProperties: true },
     'postcss-combine-media-query': {},
-    'postcss-combine-duplicated-selectors': {
-      removeDuplicatedProperties: true
-    },
-    'css-declaration-sorter': { order: 'concentric-css' },
+    'postcss-sort-media-queries': { sort: 'mobile-first' },
+    autoprefixer: {},
     cssnano: { preset: 'advanced' }
   }
 }

@@ -32,23 +32,27 @@ const head = {
   production: '{% headTags title, description, thumbnail, page.url, type %}'
 }
 
+/**
+ * Check wich assets to include as entries with js and scss.
+ *
+ * @returns {object} Array of entries and images to convert in webp.
+ */
 const getAssets = () => {
-  const entryFiles = ['./src/assets/js/main.js', './src/assets/scss/main.scss']
+  const entries = ['./src/assets/js/main.js', './src/assets/scss/main.scss']
   const exclude = ['import', '.keep', '.DS_Store']
   const loadAssets = folder => {
     const assets = fs.readdirSync(folder).filter(item => !exclude.includes(item))
-    entryFiles.push(...assets.map(asset => folder + asset))
+    entries.push(...assets.map(asset => folder + asset))
     return assets
   }
   const images = loadAssets('./src/assets/images/')
   loadAssets('./src/assets/videos/')
-  return { images, entryFiles }
+  return { images, entries }
 }
 
-const { entryFiles, images } = getAssets()
+const { entries, images } = getAssets()
 
 // TODO: Service Worker -> Which files ??
-// TODO: PostCSS only on production.
 // TODO: Writing readme.md & clean package.json
 
 const config = {
@@ -78,70 +82,43 @@ const config = {
         display: 'minimal-ui',
         startURL: '/',
         theme: APP_COLOR,
-        generateIconOptions: {
-          baseIcon: `./src/${APP_FAVICON}`,
-          sizes: [192, 512],
-          genFavicons: true
-        }
+        generateIconOptions: { baseIcon: `./src/${APP_FAVICON}`, sizes: [192, 512], genFavicons: true }
       }),
       new HtmlReplaceWebpackPlugin([
-        {
-          pattern: '/browserconfig.xml',
-          replacement: '{{ \'/browserconfig.xml\' | hash }}'
-        },
-        {
-          pattern: '/manifest.webmanifest',
-          replacement: '{{ \'/manifest.webmanifest\' | hash }}'
-        }
+        { pattern: '/browserconfig.xml', replacement: '{{ \'/browserconfig.xml\' | hash }}' },
+        { pattern: '/manifest.webmanifest', replacement: '{{ \'/manifest.webmanifest\' | hash }}' }
       ])
     ]
   },
 
   common: {
     mode: APP_ENV,
-    entry: { main: entryFiles },
-    output: {
-      path: path.resolve('public'),
-      filename: `assets/js/${filename[APP_ENV]}.js`
-    },
+    entry: { main: entries },
+    output: { path: path.resolve('public'), filename: `assets/js/${filename[APP_ENV]}.js` },
     stats: { children: false },
     module: {
       rules: [
-        {
-          test: /\.js$/,
-          exclude: /(node_modules)/,
-          use: ['babel-loader']
-        },
+        { test: /\.js$/, exclude: /(node_modules)/, use: ['babel-loader'] },
         {
           test: /\.scss$/,
           use: [
             MiniCssExtractPlugin.loader,
             'css-loader',
-            'postcss-loader',
+            { loader: 'postcss-loader', options: { postcssOptions: { config: isProd } } },
             SpritePlugin.cssLoader,
             {
               loader: 'sass-loader',
-              options: {
-                sassOptions: {
-                  importer: globImporter(),
-                  outputStyle: 'expanded'
-                }
-              }
+              options: { sassOptions: { importer: globImporter(), outputStyle: 'expanded' } }
             }
           ]
         },
         { test: /\.svg$/, loader: SpritePlugin.loader },
         {
           test: /\.(png|jpe?g|gif|webp)$/i,
-          use: [
-            {
-              loader: 'file-loader',
-              options: {
-                publicPath: '/',
-                name: `assets/images/${filename[APP_ENV]}.[ext]`
-              }
-            }
-          ]
+          use: [{
+            loader: 'file-loader',
+            options: { publicPath: '/', name: `assets/images/${filename[APP_ENV]}.[ext]` }
+          }]
         },
         {
           test: /\.(png|jpe?g)$/i,
@@ -160,27 +137,17 @@ const config = {
         },
         {
           test: /\.(mp4|webm)$/i,
-          use: [
-            {
-              loader: 'file-loader',
-              options: {
-                publicPath: '/',
-                name: `assets/videos/${filename[APP_ENV]}.[ext]`
-              }
-            }
-          ]
+          use: [{
+            loader: 'file-loader',
+            options: { publicPath: '/', name: `assets/videos/${filename[APP_ENV]}.[ext]` }
+          }]
         },
         {
           test: /\.(woff|woff2|otf|ttf|eot)$/i,
-          use: [
-            {
-              loader: 'file-loader',
-              options: {
-                publicPath: '/',
-                name: `assets/fonts/${filename[APP_ENV]}.[ext]`
-              }
-            }
-          ]
+          use: [{
+            loader: 'file-loader',
+            options: { publicPath: '/', name: `assets/fonts/${filename[APP_ENV]}.[ext]` }
+          }]
         }
       ]
     },

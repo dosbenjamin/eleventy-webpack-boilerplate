@@ -1,4 +1,5 @@
 module.exports = {
   extends: ['standard', 'plugin:compat/recommended'],
-  env: { es6: true, node: true, browser: true }
+  env: { es6: true, node: true, browser: true },
+  ignorePatterns: ['public/**/*.js']
 }

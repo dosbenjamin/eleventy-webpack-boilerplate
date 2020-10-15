@@ -1,3 +1,5 @@
+// !! OK
+
 module.exports = {
   plugins: [
     require('posthtml-minifier')({ collapseWhitespace: true, removeComments: true }),

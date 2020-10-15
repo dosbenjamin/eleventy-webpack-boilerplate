@@ -195,7 +195,7 @@ const config = {
         const fonts = fs.readdirSync('public/assets/fonts')
         const htmlTags = fonts.filter(font => font.endsWith('.woff2')).map(font => toHtml(font))
         return htmlTags.join('')
-      } catch (error) {}
+      } catch (error) { return '' }
     })
 
     eleventyConfig.addTransform('posthtml', async (content, outputPath) => {
