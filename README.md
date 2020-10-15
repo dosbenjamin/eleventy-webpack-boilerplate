@@ -1,6 +1,6 @@
 # Eleventy/Webpack Boilerplate 🙈
 
-This boilerplate is a ready-to-go front-end workflow to start a new project using the static generator [Eleventy](https://www.11ty.dev) and [Webpack](https://webpack.js.org) to bundle assets.
+This boilerplate is a ready-to-go front-end workflow to start a new project using the static site generator [Eleventy](https://www.11ty.dev) and [Webpack](https://webpack.js.org) to bundle assets.
 Originally built for a personal use, the project is strongly opinionated but feel free to use and modify it.
 
 ## Get started 🎉
@@ -18,6 +18,7 @@ Modify the remote url to use with your own GitHub account. <br>
 
 #### Edit environnement variables ✏️
 These variables are use across pages and configuration files so you only have to declare it once.
+#### *`.env`*
 ```
 APP_TITLE = 'My new 11ty website'
 APP_SHORT_TITLE = 'New site'
@@ -31,39 +32,56 @@ APP_FAVICON = 'favicon.png'
 
 ## Features ✨
 - Cache busting all the assets files
-- Compile SCSS files into CSS
-- Convert SVG files used in CSS into `sprite.svg`
+- Compile `src/assets/scss/*.scss` files into `main.css`
+- Convert `src/assets/images/import/*.svg` files used in CSS into `sprite.svg`
 - Copy `robots.txt` to `public` folder
 - Copy `.htaccess` to `public` folder
 - Generate `manifest.webmanifest`, `browserconfig.xml`, favicons and inject it inside html
-- Generate `sitemap.xml`
-- Inject resources hint in HTML to preload WOFF2 fonts
-- Inject CSS path in `.htaccess` for HTTP/2 Server Push
-- Minify HTML using PostHTML
-- Optimize and minify CSS with PostCSS
-- Optimize images and convert JPG & PNG to WEBP
+- Generate `sitemap.xml` and paste it in `public`
+- Inject resources hint in `*.html` to preload `public/assets/fonts/*.woff2`
+- Inject `main.98DJS07.css` path in `.htaccess` for HTTP/2 Server Push
+- Minify `*.html` using PostHTML
+- Optimize and minify css with PostCSS
+- Optimize images and convert `.jpg` & `.png` to `.webp`
 - Transpile JavaScript using Babel and optimize it
+- Use Nunjucks as templating engine to work with eleventy
 
 ## Eleventy filters
+
 ### GetPath
-*Input*
+#### *`Input`*
 ```html
 <link href="{{ '/assets/css/main.css' | getPath }}" rel="stylesheet" />
+
+<video controls width="1200">
+  <source src="{{ '/assets/videos/matteo-singing.webm' | getPath }}" type="video/webm">
+  <source src="{{ '/assets/videos/matteo-singing.mp4' | getPath }}" type="video/mp4">
+</video>
 ```
-*Output*
+#### *`Output`*
 ```html
 <link href="/assets/css/main.f3ef3fdf.css" rel="stylesheet" />
-```
 
-### Resize
-*Input*
+<video controls width="1200">
+  <source src="/assets/videos/matteo-singing.qm92kd09.webm" type="video/webm">
+  <source src="/assets/videos/matteo-singing.po0820qn.mp4" type="video/mp4">
+</video>
+```
+*Note: sdsdqs*
+
+### Resize - *Create a new file with new dimensions*
+#### *`Input`*
 ```html
 <img src="{{ '/assets/images/maxou.jpg' | resize(200) }}" alt="Maxime at the beach">
+<img src="{{ '/assets/images/maxou.webp' | resize(600) }}" alt="Maxime at the beach">
 ```
-*Output*
+#### *`Output`*
 ```html
 <img src="maxou-200.dk9d65d1.jpg" alt="Maxime at the beach">
+<img src="maxou-600.kj4kf923.webp" alt="Maxime at the beach">
 ```
+*Note 1: `.webp` versions are always generated even if you don't ask for it in `.njk`* <br>
+*Note 2: Resize is not available for `.gif`*
 
 ## Commands 🚀
 - `npm run clean`: clean `public` folder
