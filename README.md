@@ -33,7 +33,7 @@ APP_FAVICON = 'favicon.png'
 ⚠️ Don't forget to rename `.env.example` into `.env` !
 
 ## Features ✨
-- [Browserslist](https://github.com/browserslist/browserslist) set to *defaults*
+- [Browserslist](https://github.com/browserslist/browserslist) set to *defaults* (check [`.browserslistrc`](https://github.com/dosbenjamin/eleventy-webpack-boilerplate/blob/main/.browserslistrc))
 - Cache busting all the assets files
 - Compile `*.scss` files into a single `main.css` file
 - Convert `*.svg` files used in `*.scss` into `sprite.svg`
@@ -44,12 +44,12 @@ APP_FAVICON = 'favicon.png'
 - Inject `main.css` path in `.htaccess` for HTTP/2 Server Push
 - Inject resources hint in `*.html` to preload `*.woff2` fonts
 - Inject SEO meta tags (Twitter and Open Graph) in `*.html`
-- Minify and transform `*.html` with [PostHTML](https://posthtml.org/) (check `.posthtmlrc.js`)
+- Minify and transform `*.html` with [PostHTML](https://posthtml.org/) (check [`.posthtmlrc.js`](https://github.com/dosbenjamin/eleventy-webpack-boilerplate/blob/main/.posthtmlrc.js))
 - Minify `main.js` with [Terser](https://github.com/terser/terser)
-- Optimize, prefix and minify `main.css` with [PostCSS](https://postcss.org) (check `.postcssrc.js`)
-- Optimize images and convert `*.jpg` & `*.png` to `*.webp` (check `.imageminrc.js`)
+- Optimize, prefix and minify `main.css` with [PostCSS](https://postcss.org) (check [`.postcssrc.js`](https://github.com/dosbenjamin/eleventy-webpack-boilerplate/blob/main/.postcssrc.js))
+- Optimize images and convert `*.jpg` & `*.png` to `*.webp` (check [`.imageminrc.js`](https://github.com/dosbenjamin/eleventy-webpack-boilerplate/blob/main/.imageminrc.js))
 - Precompress files with [Brotli](https://github.com/google/brotli) and [Gzip](https://www.gzip.org) ([Zopfli](https://github.com/google/zopfli))
-- Transpile and optimize `*.js` into a single `main.js` with [Babel](https://babeljs.io) (check `.babelrc.js`)
+- Transpile and optimize `*.js` into a single `main.js` with [Babel](https://babeljs.io) (check [`.babelrc.js`](https://github.com/dosbenjamin/eleventy-webpack-boilerplate/blob/main/.babelrc.js))
 - Use [Nunjucks](https://mozilla.github.io/nunjucks/) `.njk` as templating engine
 - Use [sanitize.css](https://csstools.github.io/sanitize.css) as reset
 
@@ -96,8 +96,8 @@ APP_FAVICON = 'favicon.png'
 - `npm run serve`: lint, watch and build and on files changes
 
 ## Coding Style 🎨
-- [JavaScript Standard](https://standardjs.com) (check `.eslintrc.js`)
-- [Stylelint Standard](https://github.com/stylelint/stylelint-config-standard) + Custom (check `.stylelintrc.js`)
+- [JavaScript Standard](https://standardjs.com) (check [`.eslintrc.js`](https://github.com/dosbenjamin/eleventy-webpack-boilerplate/blob/main/.eslintrc.js))
+- [Stylelint Standard](https://github.com/stylelint/stylelint-config-standard) + Custom (check [`.stylelintrc.js`](https://github.com/dosbenjamin/eleventy-webpack-boilerplate/blob/main/.stylelintrc.js))
 
 ## To-do 🚧
 - [ ] Service worker
