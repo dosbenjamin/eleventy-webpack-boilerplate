@@ -33,7 +33,7 @@ APP_FAVICON = 'favicon.png'
 ⚠️ Don't forget to rename `.env.example` into `.env` !
 
 ## Features ✨
-- Browserslist set to *defaults*
+- [Browserslist](https://github.com/browserslist/browserslist) set to *defaults*
 - Cache busting all the assets files
 - Compile `*.scss` files into a single `main.css` file
 - Convert `*.svg` files used in `*.scss` into `sprite.svg`
@@ -96,8 +96,8 @@ APP_FAVICON = 'favicon.png'
 - `npm run serve`: lint, watch and build and on files changes
 
 ## Coding Style 🎨
-- JavaScript Standard (check `.eslintrc.js`)
-- Stylelint Standard + Custom (check `.stylelintrc.js`)
+- [JavaScript Standard](https://standardjs.com) (check `.eslintrc.js`)
+- [Stylelint Standard](https://github.com/stylelint/stylelint-config-standard) + Custom (check `.stylelintrc.js`)
 
 ## To-do 🚧
 - [ ] Service worker
