@@ -60,7 +60,6 @@ const config = {
     devtool: 'source-map',
     plugins: [new CopyPlugin({ patterns: [{ from: `src/${APP_FAVICON}`, to: `${APP_FAVICON}` }] })]
   },
-
   production: {
     optimization: {
       minimize: true,
@@ -90,7 +89,6 @@ const config = {
       ])
     ]
   },
-
   common: {
     mode: APP_ENV,
     entry: { main: entries },

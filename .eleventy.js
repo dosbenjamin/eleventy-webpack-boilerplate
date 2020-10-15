@@ -16,23 +16,13 @@ const {
   APP_BASE_URL
 } = process.env
 
-/**
- * Move sitemap.njk depending on the environnement.
- *
- * @returns {void} Nothing
- */
-const moveSitemap = (() => {
-  const prodPath = path.resolve('src/views/sitemap.njk')
-  const devPath = path.resolve('src/sitemap.njk')
-  const move = {
-    development: () => fs.rename(prodPath, devPath, () => {}),
-    production: () => fs.rename(devPath, prodPath, () => {})
-  }
-  return move[APP_ENV]()
-})()
+const sitemapLocation = {
+  production: path.resolve('src/views/sitemap.njk'),
+  development: path.resolve('src/sitemap.njk')
+}
 
 /**
- * Extract the folder of a file path.
+ * Extract the folder from file path.
  *
  * @param {string} file Relative path of the file starting from public folder.
  * @returns {string} Folder extracted from the complete file path.
@@ -159,6 +149,7 @@ const config = {
     eleventyConfig.addFilter('getPath', asset => asset)
     eleventyConfig.addFilter('resize', resizeImage => resizeImage)
     eleventyConfig.addWatchTarget('src/assets/**/*')
+    fs.rename(sitemapLocation.production, sitemapLocation.development, () => {})
     fs.writeFileSync('src/views/includes/head.njk', '')
   },
 
@@ -211,6 +202,7 @@ const config = {
       }
     })
 
+    fs.rename(sitemapLocation.development, sitemapLocation.production, () => {})
     eleventyConfig.addPassthroughCopy({ 'src/robots.txt': 'robots.txt' })
     injectServerPush()
   },
