@@ -11,7 +11,6 @@ Originally built for a personal use, the project is strongly opinionated but fee
 1. `git clone https://github.com/dosbenjamin/eleventy-webpack-boilerplate`
 2. `npm install`
 
-### Set up the project 🔧
 ### Link to your GitHub
 Modify the remote url to use with your own GitHub account. <br>
 
@@ -43,12 +42,12 @@ APP_FAVICON = 'favicon.png'
 - Generate `sitemap.xml` and paste it in `public`
 - Inject `main.css` path in `.htaccess` for HTTP/2 Server Push
 - Inject resources hint in `*.html` to preload `*.woff2` fonts
-- Inject SEO meta tags (Twitter and OpenGrah) in HTML
+- Inject SEO meta tags (Twitter and Open Graph) in `*.html`
 - Minify `*.html` using PostHTML
 - Optimize and minify `main.css` with PostCSS
 - Optimize images and convert `*.jpg` & `*.png` to `*.webp`
-- Transpile and optimize JavaScript into a single `main.js` using Babel
-- Use Nunjucks as templating engine
+- Transpile and optimize `*.js` into a single `main.js` using Babel
+- Use Nunjucks `.njk` as templating engine
 
 ## Eleventy filters
 
@@ -71,7 +70,7 @@ APP_FAVICON = 'favicon.png'
   <source src="/assets/videos/matteo-singing.po0820qn.mp4" type="video/mp4">
 </video>
 ```
-*Note: sdsdqs*
+*Note: Can be use for any file that will be in `public` folder*
 
 ### Resize
 #### `Input`
@@ -94,12 +93,12 @@ APP_FAVICON = 'favicon.png'
 
 ## Coding Style
 - JavaScript Standard
-- Stylelint Standard + Custom
+- Stylelint Standard + Custom (check `.stylelintrc.js`)
 
 ## To-do
-- [] Service worker
-- [] Cleaning package.json
-- [] Readme
+- [ ] Service worker
+- [ ] Cleaning package.json
+- [ ] Readme
 
 ## Resources
 [Eleventy](https://www.11ty.dev)
