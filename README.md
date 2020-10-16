@@ -49,6 +49,7 @@ APP_WEBP = true
 ⚠️ Don't forget to rename `.env.example` into `.env` !
 
 ## Features ✨
+- Bundle assets with [Webpack](https://webpack.js.org) (check [`webpack.config.js`](https://github.com/dosbenjamin/eleventy-webpack-boilerplate/blob/main/webpack.config.js))
 - [Browserslist](https://github.com/browserslist/browserslist) set to *defaults* (check [`.browserslistrc`](https://github.com/dosbenjamin/eleventy-webpack-boilerplate/blob/main/.browserslistrc))
 - Cache busting all the assets files
 - Cache files with [Service Worker](https://developer.mozilla.org/en-US/docs/Web/API/Service_Worker_API)
@@ -58,6 +59,7 @@ APP_WEBP = true
 - Copy `.htaccess` to `public` folder
 - Generate favicons, `manifest.webmanifest`, `browserconfig.xml` and inject them inside html
 - Generate `sitemap.xml` and paste it in `public`
+- Generate static site with [Eleventy](https://www.11ty.dev) (check [`.eleventy.js`](https://github.com/dosbenjamin/eleventy-webpack-boilerplate/blob/main/.eleventy.js))
 - Inject `main.css` path in `.htaccess` for HTTP/2 Server Push
 - Inject resources hint in `*.html` to preload `*.woff2` fonts
 - Inject SEO meta tags (Twitter and Open Graph) in `*.html`
