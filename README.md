@@ -22,19 +22,19 @@ Modify the remote url to use with your own GitHub account.
 ### Edit environnement variables ✏️
 These variables are use across pages, configuration files and editable in `.env` file.
 ```.env
-# Title used accross all the project, to this will be added the specific title of each page
+# Title used accross all the project, to this will be added the specific page title
 APP_TITLE = 'My new 11ty website'
 
 # Only used in webmanifest
 APP_SHORT_TITLE = 'New site'
 
-# Sign that separates APP_TITLE and pages specific title
+# Sign that separates APP_TITLE and specific page title
 APP_TITLE_DIVIDER = '—'
 
 # Only used for author meta tag
 APP_AUTHOR = 'John Doe'
 
-# Used for canonical link, permalink of page will be added to this
+# Used for canonical links, permalink of page will be added to this
 APP_BASE_URL = 'https://example.com'
 
 # Used in webmanifest and meta tag
@@ -43,7 +43,7 @@ APP_COLOR = '#fff'
 # Name and location of favicon. By default it is located in the src folder
 APP_FAVICON = 'favicon.png'
 
-# Enable this to convert every jpg and png to webp
+# Enable this to convert jpg/png to webp
 APP_WEBP = true
 ```
 ⚠️ Don't forget to rename `.env.example` into `.env` !
