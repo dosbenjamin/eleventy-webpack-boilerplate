@@ -21,7 +21,4 @@ generateSW({
       expiration: { maxEntries: 10 }
     }
   }]
-})
-  .then(({ count, size }) => {
-    console.info(`Generated ${swDest}, which will precache ${count} files, totaling ${size} bytes.`)
-  })
+}).then(({ count }) => console.info(`Cached ${count} files with Service Worker`))

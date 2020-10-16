@@ -1,6 +1,7 @@
 const path = require('path')
 const fs = require('fs')
 const { merge } = require('webpack-merge')
+const dedent = require('dedent')
 
 const TerserPlugin = require('terser-webpack-plugin')
 const globImporter = require('node-sass-glob-importer')
@@ -12,6 +13,8 @@ const HtmlReplaceWebpackPlugin = require('html-replace-webpack-plugin')
 const ImageMinimizerPlugin = require('image-minimizer-webpack-plugin')
 const SpritePlugin = require('extract-svg-sprite-webpack-plugin')
 const CopyPlugin = require('copy-webpack-plugin')
+const StylelintPlugin = require('stylelint-webpack-plugin')
+const ESLintPlugin = require('eslint-webpack-plugin')
 
 require('dotenv').config()
 const {
@@ -20,7 +23,8 @@ const {
   APP_SHORT_TITLE,
   APP_TITLE_DIVIDER,
   APP_COLOR,
-  APP_FAVICON
+  APP_FAVICON,
+  APP_WEBP
 } = process.env
 
 const isProd = APP_ENV === 'production'
@@ -86,14 +90,22 @@ const config = {
       new HtmlReplaceWebpackPlugin([
         { pattern: '/browserconfig.xml', replacement: '{{ \'/browserconfig.xml\' | hash }}' },
         { pattern: '/manifest.webmanifest', replacement: '{{ \'/manifest.webmanifest\' | hash }}' }
-      ])
+      ]),
+      {
+        apply: (compiler) => {
+          const start = console.info('\x1b[46m\x1b[30m', 'START', '\x1b[0m\x1b[36m', 'The project is building! 🏗\n', '\x1b[0m')
+          const done = console.info('Bundled all the static assets')
+          compiler.hooks.beforeRun.tap('BeforeRunPlugin', () => start)
+          compiler.hooks.afterEmit.tap('AfterEmitPlugin', () => done)
+        }
+      }
     ]
   },
   common: {
     mode: APP_ENV,
     entry: { main: entries },
+    stats: { all: false, warnings: true, errors: true },
     output: { path: path.resolve('public'), filename: `assets/js/${filename[APP_ENV]}.js` },
-    stats: { children: false },
     module: {
       rules: [
         { test: /\.js$/, exclude: /(node_modules)/, use: ['babel-loader'] },
@@ -102,7 +114,7 @@ const config = {
           use: [
             MiniCssExtractPlugin.loader,
             'css-loader',
-            { loader: 'postcss-loader', options: { postcssOptions: { config: isProd } } },
+            { loader: 'postcss-loader', options: { postcssOptions: { config: isProd, hideNothingWarning: true } } },
             SpritePlugin.cssLoader,
             {
               loader: 'sass-loader',
@@ -127,7 +139,7 @@ const config = {
                 cache: true,
                 deleteOriginalAssets: false,
                 filename: 'assets/images/[name].webp',
-                filter: (source, sourcePath) => images.some(img => sourcePath.includes(img)),
+                filter: (source, sourcePath) => images.some(img => sourcePath.includes(img) && APP_WEBP === 'true'),
                 minimizerOptions: { plugins: [['imagemin-webp', { quality: 80 }]] }
               }
             }
@@ -152,7 +164,7 @@ const config = {
     plugins: [
       new MiniCssExtractPlugin({ filename: `assets/css/${filename[APP_ENV]}.css` }),
       new HtmlWebpackPlugin({
-        templateContent: `<head>
+        templateContent: dedent`<head>
           <meta charset="UTF-8">
           <meta name="viewport" content="width=device-width, initial-scale=1.0">
           ${isProd ? '{% preloadFonts \'\' %}' : ''}
@@ -172,7 +184,9 @@ const config = {
         publicPath: '/',
         filename: isProd ? 'assets/images/sprite.[contenthash:8].svg' : 'assets/images/sprite.svg',
         spriteType: 'stack'
-      })
+      }),
+      new StylelintPlugin(),
+      new ESLintPlugin()
     ]
   }
 }

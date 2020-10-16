@@ -29,6 +29,7 @@ APP_AUTHOR = 'John Doe'
 APP_BASE_URL = 'https://example.com'
 APP_COLOR = '#fff'
 APP_FAVICON = 'favicon.png'
+APP_WEBP = true
 ```
 ⚠️ Don't forget to rename `.env.example` into `.env` !
 
@@ -87,8 +88,7 @@ APP_FAVICON = 'favicon.png'
 <img src="/assets/images/maxou-200.dk9d65d1.jpg" alt="Maxime at the beach">
 <img src="/assets/images/maxou-600.kj4kf923.webp" alt="Maxime at the beach">
 ```
-*Note<sup>1</sup>: `*.webp` versions are always generated even if you don't ask for it in `*.njk`* <br>
-*Note<sup>2</sup>: Resize is not available for `*.gif`*
+*Note: Resize is not available for `*.gif`*
 
 ## Commands 🚀
 - `npm run clean`: clean `public` folder

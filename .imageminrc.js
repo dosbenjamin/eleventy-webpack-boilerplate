@@ -19,4 +19,4 @@ imagemin(['public/**/*.{jpg,jpeg,png,svg,gif}'], {
     }),
     imageminGifsicle({ interlaced: true, optimizationLevel: 3 })
   ]
-})
+}).then(data => console.info(`Optimized ${data.length} images`))

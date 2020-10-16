@@ -3,6 +3,7 @@ const fs = require('fs')
 const assign = require('lodash.assign')
 const md5File = require('md5-file')
 const sharp = require('sharp')
+const dedent = require('dedent')
 
 const posthtml = require('posthtml')
 const pluginSitemap = require('@quasibit/eleventy-plugin-sitemap')
@@ -134,13 +135,13 @@ const injectServerPush = () => {
   const destination = path.resolve('public/.htaccess')
   const css = '/assets/css/main.css'
   const cssPath = getAssetPath(css)
-  const template = `<IfModule http2_module>
-  SetEnvIf Cookie "cssloaded=1" cssloaded
-  <filesMatch "\.([hH][tT][mM][lL]?)">
-    Header add Link "<${cssPath}>;rel=preload;as=style" env=!cssloaded
-    Header add Set-Cookie "cssloaded=1; Path=/; Secure; HttpOnly" env=!cssloaded
-  </filesMatch>
-</IfModule>`
+  const template = dedent`<IfModule http2_module>
+    SetEnvIf Cookie "cssloaded=1" cssloaded
+    <filesMatch "\.([hH][tT][mM][lL]?)">
+      Header add Link "<${cssPath}>;rel=preload;as=style" env=!cssloaded
+      Header add Set-Cookie "cssloaded=1; Path=/; Secure; HttpOnly" env=!cssloaded
+    </filesMatch>
+  </IfModule>`
   fs.copyFile(source, destination, fs.constants.COPYFILE_EXCL, () => fs.appendFileSync(destination, template))
 }
 
@@ -148,7 +149,7 @@ const config = {
   development: eleventyConfig => {
     eleventyConfig.addFilter('getPath', asset => asset)
     eleventyConfig.addFilter('resize', resizeImage => resizeImage)
-    eleventyConfig.addWatchTarget('src/assets/**/*')
+    eleventyConfig.setBrowserSyncConfig({ logLevel: 'info', open: true })
     fs.rename(sitemapLocation.production, sitemapLocation.development, () => {})
     fs.writeFileSync('src/views/includes/head.njk', '')
   },
@@ -159,7 +160,7 @@ const config = {
     eleventyConfig.addNunjucksAsyncFilter('resize', resizeImage)
 
     eleventyConfig.addShortcode('headTags', (title, description, thumbnail, url, type) => {
-      return `<meta name="author" content="${APP_AUTHOR}">
+      return dedent`<meta name="author" content="${APP_AUTHOR}">
       <meta name="robots" content="index, follow">
       <link rel="canonical" href="${APP_BASE_URL}${url}">
       <meta property="og:title" content="${title} ${APP_TITLE_DIVIDER} ${APP_TITLE}">
