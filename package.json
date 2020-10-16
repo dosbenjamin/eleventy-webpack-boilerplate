@@ -11,6 +11,9 @@
     "optimize:sw": "node src/sw",
     "optimize:images": "node .imageminrc",
     "optimize:precompress": "sh precompress.sh",
+    "lint:css": "stylelint src/**/*.scss",
+    "lint:js": "eslint src/**/*.js",
+    "lint": "run-s lint:*",
     "build:webpack": "webpack",
     "build:eleventy": "eleventy",
     "build": "APP_ENV=production run-s clean build:* optimize:* --silent"

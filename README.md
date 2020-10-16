@@ -59,6 +59,7 @@ APP_WEBP = true
 ### GetPath 🗃
 ```html
 <!-- Input / index.njk -->
+
 <link href="{{ '/assets/css/main.css' | getPath }}" rel="stylesheet" />
 
 <video controls width="1200">
@@ -68,6 +69,7 @@ APP_WEBP = true
 ```
 ```html
 <!-- Output / index.html -->
+
 <link href="/assets/css/main.f3ef3fdf.css" rel="stylesheet" />
 
 <video controls width="1200">
@@ -80,11 +82,13 @@ APP_WEBP = true
 ### Resize 📏
 ```html
 <!-- Input / index.njk -->
+
 <img src="{{ '/assets/images/maxou.jpg' | resize(200) }}" alt="Maxime at the beach">
 <img src="{{ '/assets/images/maxou.webp' | resize(600) }}" alt="Maxime at the beach">
 ```
 ```html
 <!-- Output / index.html -->
+
 <img src="/assets/images/maxou-200.dk9d65d1.jpg" alt="Maxime at the beach">
 <img src="/assets/images/maxou-600.kj4kf923.webp" alt="Maxime at the beach">
 ```
@@ -92,9 +96,10 @@ APP_WEBP = true
 ⚠️ Resize is not available for `*.gif`
 
 ## Commands 🚀
-- `npm run clean`: clean `public` folder
 - `npm run build`: lint and build in `public` folder for production
-- `npm run serve`: lint, watch and build and on files changes
+- `npm run clean`: clean `public` folder
+- `npm run lint`: lint `*.scss` and `*.js` files
+- `npm run serve`: lint, watch and build on files changes
 
 ## Coding Style 🎨
 - [JavaScript Standard](https://standardjs.com) (check [`.eslintrc.js`](https://github.com/dosbenjamin/eleventy-webpack-boilerplate/blob/main/.eslintrc.js))
