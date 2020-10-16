@@ -60,6 +60,8 @@ APP_WEBP = true
 - Inject `main.css` path in `.htaccess` for HTTP/2 Server Push
 - Inject resources hint in `*.html` to preload `*.woff2` fonts
 - Inject SEO meta tags (Twitter and Open Graph) in `*.html`
+- Lint `*.js` files with [ESLint](https://eslint.org) (check [`.eslintrc.js`](https://github.com/dosbenjamin/eleventy-webpack-boilerplate/blob/main/.eslintrc.js))
+- Lint `*.scss` files with [Stylelint](https://stylelint.io) (check [`.stylelintrc.js`](https://github.com/dosbenjamin/eleventy-webpack-boilerplate/blob/main/.stylelintrc.js))
 - Minify and transform `*.html` with [PostHTML](https://posthtml.org/) (check [`.posthtmlrc.js`](https://github.com/dosbenjamin/eleventy-webpack-boilerplate/blob/main/.posthtmlrc.js))
 - Minify `main.js` with [Terser](https://github.com/terser/terser)
 - Optimize, prefix and minify `main.css` with [PostCSS](https://postcss.org) (check [`.postcssrc.js`](https://github.com/dosbenjamin/eleventy-webpack-boilerplate/blob/main/.postcssrc.js))
