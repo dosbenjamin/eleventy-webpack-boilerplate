@@ -12,9 +12,9 @@ Originally built for a personal use, the project is very opinionated and is focu
 2. `npm install`
 
 ### Link to your GitHub 🔧
-Modify the remote url to use with your own GitHub account. <br>
+Modify the remote url to use with your own GitHub account.
 
-`git remote set-url origin git@github.com:USERNAME/REPOSITORY.git` <br>
+`git remote set-url origin git@github.com:USERNAME/REPOSITORY.git`
 
 ⚠️ You need a SSH key for this → [How to generate a SSH key](https://docs.github.com/en/enterprise-server@2.20/github/authenticating-to-github/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent)
 
@@ -88,9 +88,9 @@ APP_WEBP = true
 <img src="/assets/images/maxou-200.dk9d65d1.jpg" alt="Maxime at the beach">
 <img src="/assets/images/maxou-600.kj4kf923.webp" alt="Maxime at the beach">
 ```
-⚠️ Be sure to have `APP_WEBP = true` in `.env` before using this filter for `*.webp` <br>
+⚠️ Be sure to have `APP_WEBP = true` in `.env` before using this filter with `*.webp`
 
-*Note: Resize is not available for `*.gif`*
+⚠️ Resize is not available for `*.gif`
 
 ## Commands 🚀
 - `npm run clean`: clean `public` folder
