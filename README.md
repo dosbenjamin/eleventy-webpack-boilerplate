@@ -51,6 +51,7 @@ APP_WEBP = true
 ## Features ✨
 - [Browserslist](https://github.com/browserslist/browserslist) set to *defaults* (check [`.browserslistrc`](https://github.com/dosbenjamin/eleventy-webpack-boilerplate/blob/main/.browserslistrc))
 - Cache busting all the assets files
+- Cache files with [Service Worker](https://developer.mozilla.org/en-US/docs/Web/API/Service_Worker_API)
 - Compile `*.scss` files into a single `main.css` file
 - Convert `*.svg` files used in `*.scss` into `sprite.svg`
 - Copy `robots.txt` to `public` folder
@@ -62,6 +63,7 @@ APP_WEBP = true
 - Inject SEO meta tags (Twitter and Open Graph) in `*.html`
 - Lint `*.js` files with [ESLint](https://eslint.org) (check [`.eslintrc.js`](https://github.com/dosbenjamin/eleventy-webpack-boilerplate/blob/main/.eslintrc.js))
 - Lint `*.scss` files with [Stylelint](https://stylelint.io) (check [`.stylelintrc.js`](https://github.com/dosbenjamin/eleventy-webpack-boilerplate/blob/main/.stylelintrc.js))
+- Live reload server on file changes
 - Minify and transform `*.html` with [PostHTML](https://posthtml.org/) (check [`.posthtmlrc.js`](https://github.com/dosbenjamin/eleventy-webpack-boilerplate/blob/main/.posthtmlrc.js))
 - Minify `main.js` with [Terser](https://github.com/terser/terser)
 - Optimize, prefix and minify `main.css` with [PostCSS](https://postcss.org) (check [`.postcssrc.js`](https://github.com/dosbenjamin/eleventy-webpack-boilerplate/blob/main/.postcssrc.js))
@@ -116,7 +118,7 @@ APP_WEBP = true
 - `npm run build`: lint and build in `public` folder for production
 - `npm run clean`: clean `public` folder
 - `npm run lint`: lint `*.scss` and `*.js` files
-- `npm run serve`: lint, watch and build on files changes
+- `npm run serve`: lint, watch and build on file changes
 
 ## Coding Style 🎨
 - [JavaScript Standard](https://standardjs.com) (check [`.eslintrc.js`](https://github.com/dosbenjamin/eleventy-webpack-boilerplate/blob/main/.eslintrc.js))
