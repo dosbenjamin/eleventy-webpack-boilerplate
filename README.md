@@ -57,7 +57,7 @@ APP_WEBP = true
 - Convert `*.svg` files used in `*.scss` into `sprite.svg`
 - Copy `robots.txt` to `public` folder
 - Copy `.htaccess` to `public` folder
-- Generate favicons, `manifest.webmanifest`, `browserconfig.xml` and inject them inside html
+- Generate favicons, `manifest.webmanifest`, `browserconfig.xml` and inject them inside `*.html`
 - Generate `sitemap.xml` and paste it in `public`
 - Generate static site with [Eleventy](https://www.11ty.dev) (check [`.eleventy.js`](https://github.com/dosbenjamin/eleventy-webpack-boilerplate/blob/main/.eleventy.js))
 - Inject `main.css` path in `.htaccess` for HTTP/2 Server Push
@@ -69,7 +69,7 @@ APP_WEBP = true
 - Minify and transform `*.html` with [PostHTML](https://posthtml.org/) (check [`.posthtmlrc.js`](https://github.com/dosbenjamin/eleventy-webpack-boilerplate/blob/main/.posthtmlrc.js))
 - Minify `main.js` with [Terser](https://github.com/terser/terser)
 - Optimize, prefix and minify `main.css` with [PostCSS](https://postcss.org) (check [`.postcssrc.js`](https://github.com/dosbenjamin/eleventy-webpack-boilerplate/blob/main/.postcssrc.js))
-- Optimize images and convert `*.jpg` & `*.png` to `*.webp` (check [`.imageminrc.js`](https://github.com/dosbenjamin/eleventy-webpack-boilerplate/blob/main/.imageminrc.js))
+- Optimize images and convert `*.jpg` & `*.png` to `*.webp` with [Imagemin](https://github.com/imagemin/imagemin) (check [`.imageminrc.js`](https://github.com/dosbenjamin/eleventy-webpack-boilerplate/blob/main/.imageminrc.js))
 - Precompress files with [Brotli](https://github.com/google/brotli) and [Gzip](https://www.gzip.org) ([Zopfli](https://github.com/google/zopfli))
 - Transpile and optimize `*.js` into a single `main.js` with [Babel](https://babeljs.io) (check [`.babelrc.js`](https://github.com/dosbenjamin/eleventy-webpack-boilerplate/blob/main/.babelrc.js))
 - Use [Nunjucks](https://mozilla.github.io/nunjucks/) `.njk` as templating engine
