@@ -88,7 +88,7 @@ APP_WEBP = true
 <img src="/assets/images/maxou-200.dk9d65d1.jpg" alt="Maxime at the beach">
 <img src="/assets/images/maxou-600.kj4kf923.webp" alt="Maxime at the beach">
 ```
-⚠️ Be sure to have `APP_WEBP = true` in `.env` before using this filter with `*.webp`
+⚠️ Be sure to have `APP_WEBP = true` in `.env` before using this filter with `*.webp` <br>
 ⚠️ Resize is not available for `*.gif`
 
 ## Commands 🚀
