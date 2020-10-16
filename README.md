@@ -57,8 +57,8 @@ APP_WEBP = true
 ## Eleventy filters 🔍
 
 ### GetPath 🗃
-#### `Input`
 ```html
+<!-- Input / index.njk -->
 <link href="{{ '/assets/css/main.css' | getPath }}" rel="stylesheet" />
 
 <video controls width="1200">
@@ -66,8 +66,8 @@ APP_WEBP = true
   <source src="{{ '/assets/videos/matteo-singing.mp4' | getPath }}" type="video/mp4">
 </video>
 ```
-#### `Output`
 ```html
+<!-- Output / index.html -->
 <link href="/assets/css/main.f3ef3fdf.css" rel="stylesheet" />
 
 <video controls width="1200">
@@ -78,16 +78,17 @@ APP_WEBP = true
 *Note: Can be use for any file that will be in `public`*
 
 ### Resize 📏
-#### `Input`
 ```html
+<!-- Input / index.njk -->
 <img src="{{ '/assets/images/maxou.jpg' | resize(200) }}" alt="Maxime at the beach">
 <img src="{{ '/assets/images/maxou.webp' | resize(600) }}" alt="Maxime at the beach">
 ```
-#### `Output`
 ```html
+<!-- Output / index.html -->
 <img src="/assets/images/maxou-200.dk9d65d1.jpg" alt="Maxime at the beach">
 <img src="/assets/images/maxou-600.kj4kf923.webp" alt="Maxime at the beach">
 ```
+⚠️ Be sure to have `APP_WEBP = true` in `.env` before using this filter for `*.webp` <br>
 *Note: Resize is not available for `*.gif`*
 
 ## Commands 🚀
