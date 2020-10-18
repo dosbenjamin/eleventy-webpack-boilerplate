@@ -11,14 +11,6 @@ Originally built for a personal use, the project is very opinionated and is focu
 1. `git clone https://github.com/dosbenjamin/eleventy-webpack-boilerplate`
 2. `npm install`
 
-### Link to your GitHub 🔧
-Modify the remote url to use with your own GitHub account.
-
-`git remote set-url origin git@github.com:USERNAME/REPOSITORY.git`
-
-⚠️ You need a SSH key for this → [How to generate a SSH key](https://docs.github.com/en/enterprise-server@2.20/github/authenticating-to-github/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent)
-
-
 ### Edit environnement variables ✏️
 These variables are use across pages, configuration files and editable in `.env` file.
 ```.env
