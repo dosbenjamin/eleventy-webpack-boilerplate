@@ -31,7 +31,7 @@ APP_COLOR = '#fff'
 APP_FAVICON = 'favicon.png'
 APP_WEBP = true
 ```
-⚠️ Don't forget to rename `.env.example` into `.env` !
+⚠️ Don't forget to rename `.env.example` into `.env`!
 
 ## Features ✨
 - [Browserslist](https://github.com/browserslist/browserslist) set to *defaults* (check [`.browserslistrc`](https://github.com/dosbenjamin/eleventy-webpack-boilerplate/blob/main/.browserslistrc))

@@ -1,6 +1,6 @@
 ---
 
-title: 404
+title: Offline
 eleventyExcludeFromCollections: true
 robots: noindex, nofollow
 layout: base

@@ -1,0 +1,60 @@
+$fonts: (
+  // 'Example Sans': (
+  //   'example-sans-400' 400,
+  //   'example-sans-900' 900
+  // ),
+  // 'Example Display': (
+  //   Add a comma at the end if there is only one variant.
+  //   'example-display' 400 normal swap ['ttf', 'otf'],
+  // )
+);
+
+@mixin font-face(
+  $fontFamily,
+  $fontFile,
+  $fontWeight,
+  $fontStyle,
+  $fontDisplay,
+  $fontFormats) {
+
+  @font-face {
+    font-family: $fontFamily;
+    font-weight: $fontWeight;
+    font-style: $fontStyle;
+    display: $fontDisplay;
+
+    @each $fontFormat in $fontFormats {
+      src: url('../fonts/#{$fontFile}.#{$fontFormat}') format($fontFormat);
+    }
+  }
+}
+
+@each $font in $fonts {
+  $fontFamily: nth($font, 1);
+  $fontVariants: nth($font, 2);
+
+  @each $fontVariant in $fontVariants {
+    $fontFile: nth($fontVariant, 1);
+    $fontWeight: nth($fontVariant, 2);
+    $fontStyle: normal;
+    $fontDisplay: swap;
+    $fontFormats: ['woff', 'woff2'];
+
+    @if length($fontVariant) == 3 {
+      $fontStyle: nth($fontVariant, 3);
+    } @else if length($fontVariant) == 4 {
+      $fontDisplay: nth($fontVariant, 4);
+    } @else if length($fontVariant) == 5 {
+      $fontFormats: nth($fontVariant, 5);
+    }
+
+    @include font-face(
+      $fontFamily,
+      $fontFile,
+      $fontWeight,
+      $fontStyle,
+      $fontDisplay,
+      $fontFormats
+    );
+  }
+}

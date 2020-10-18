@@ -1,5 +1,3 @@
-// !! OK
-
 module.exports = {
   presets: [
     ['@babel/preset-env'],
@@ -9,7 +7,10 @@ module.exports = {
     'wildcard',
     'babel-plugin-loop-optimizer',
     'array-includes',
-    ['groundskeeper-willie', { removeConsole: true, removeDebugger: true, removePragma: true }],
+    [
+      'groundskeeper-willie',
+      { removeConsole: true, removeDebugger: true, removePragma: true }
+    ],
     ['@babel/plugin-transform-runtime', { 'corejs': 3 }],
     'object-to-json-parse',
     'closure-elimination',

@@ -35,7 +35,6 @@ devDependencies:
   eslint-webpack-plugin: 2.1.0_eslint@7.10.0+webpack@4.44.2
   extract-svg-sprite-webpack-plugin: 0.8.1
   file-loader: 6.1.0_webpack@4.44.2
-  friendly-errors-webpack-plugin: 1.7.0_webpack@4.44.2
   html-replace-webpack-plugin: 2.5.6
   html-webpack-plugin: 4.5.0_webpack@4.44.2
   image-minimizer-webpack-plugin: 1.0.0_webpack@4.44.2
@@ -71,10 +70,12 @@ devDependencies:
   stylelint-declaration-use-variable: 1.7.2
   stylelint-high-performance-animation: 1.5.1_stylelint@13.7.2
   stylelint-no-unsupported-browser-features: 4.0.0_stylelint@13.7.2
+  stylelint-scss: 3.18.0_stylelint@13.7.2
   stylelint-webpack-plugin: 2.1.1_stylelint@13.7.2+webpack@4.44.2
   terser-webpack-plugin: 4.2.2_webpack@4.44.2
   webpack: 4.44.2_93ca2875a658e9d1552850624e6b91c7
   webpack-cli: 3.3.12_webpack@4.44.2
+  webpack-inject-plugin: 1.5.4_webpack@4.44.2
   webpack-merge: 5.1.4
   webpack-plugin-pwa-manifest: 1.0.4_f5ff6f96a5b3c23f5853150182c6b9bf
   webpack-rename-plugin: 0.0.2
@@ -2113,6 +2114,13 @@ packages:
     dev: true
     resolution:
       integrity: sha1-7ihweulOEdK4J7y+UnC86n8+ce4=
+  /@types/loader-utils/1.1.4:
+    dependencies:
+      '@types/node': 14.11.10
+      '@types/webpack': 4.41.22
+    dev: true
+    resolution:
+      integrity: sha512-puqX4dZW2ZRAz0orsBvQx6SmuE0pf/iGFqkA7rH0nC/lfCS6H1pdkLIagb/Ud8QMQMG0UlyOE3Hpb+SgQIpTmA==
   /@types/minimatch/3.0.3:
     dev: true
     resolution:
@@ -2121,6 +2129,10 @@ packages:
     dev: true
     resolution:
       integrity: sha1-aaI6OtKcrwCX8G7aWbNh7i8GOfY=
+  /@types/node/14.11.10:
+    dev: true
+    resolution:
+      integrity: sha512-yV1nWZPlMFpoXyoknm4S56y2nlTAuFYaJuQtYRAOU7xA/FJ9RY0Xm7QOkaYMMmr8ESdHIuUb6oQgR/0+2NqlyA==
   /@types/node/14.11.2:
     dev: true
     resolution:
@@ -2196,7 +2208,7 @@ packages:
       integrity: sha512-b3nLFGaGkJ9rzOcuXRfHkZMdjsawuDD0ENL9fzTophtBg8FJHSGbH7daXkEpcwy3v7Xol3pAvsmlYyFhR4pqJw==
   /@types/webpack-sources/2.0.0:
     dependencies:
-      '@types/node': 14.11.8
+      '@types/node': 14.11.10
       '@types/source-list-map': 0.1.2
       source-map: 0.7.3
     dev: true
@@ -2205,7 +2217,7 @@ packages:
   /@types/webpack/4.41.22:
     dependencies:
       '@types/anymatch': 1.3.1
-      '@types/node': 14.11.8
+      '@types/node': 14.11.10
       '@types/tapable': 1.0.6
       '@types/uglify-js': 3.11.0
       '@types/webpack-sources': 2.0.0
@@ -5184,6 +5196,12 @@ packages:
     dev: true
     resolution:
       integrity: sha512-MSjYzcWNOA0ewAHpz0MxpYFvwg6yjy1NG3xteoqz644VCo/RPgnr1/GGt+ic3iJTzQ8Eu3TdM14SawnVUmGE6A==
+  /emojis-list/2.1.0:
+    dev: true
+    engines:
+      node: '>= 0.10'
+    resolution:
+      integrity: sha1-TapNnbAPmBmIDHn6RXrlsJof04k=
   /emojis-list/3.0.0:
     dev: true
     engines:
@@ -5311,12 +5329,6 @@ packages:
     dev: true
     resolution:
       integrity: sha512-7dFHNmqeFSEt2ZBsCriorKnn3Z2pj+fd9kmI6QoWw4//DL+icEBfc0U7qJCisqrTsKTjw4fNFy2pW9OqStD84g==
-  /error-stack-parser/2.0.6:
-    dependencies:
-      stackframe: 1.2.0
-    dev: true
-    resolution:
-      integrity: sha512-d51brTeqC+BHlwF0BhPtcYgF5nlzf9ZZ0ZIUQNZpc9ZB9qw5IJ2diTrBY9jlCJkTLITYPjmiX6OWCwH+fuyNgQ==
   /es-abstract/1.17.6:
     dependencies:
       es-to-primitive: 1.2.1
@@ -6187,17 +6199,6 @@ packages:
       node: '>= 0.6'
     resolution:
       integrity: sha1-PYyt2Q2XZWn6g1qx+OSyOhBWBac=
-  /friendly-errors-webpack-plugin/1.7.0_webpack@4.44.2:
-    dependencies:
-      chalk: 1.1.3
-      error-stack-parser: 2.0.6
-      string-width: 2.1.1
-      webpack: 4.44.2_93ca2875a658e9d1552850624e6b91c7
-    dev: true
-    peerDependencies:
-      webpack: ^2.0.0 || ^3.0.0 || ^4.0.0
-    resolution:
-      integrity: sha512-K27M3VK30wVoOarP651zDmb93R9zF28usW4ocaK3mfQeIEI5BPht/EzZs5E8QLLwbLRJQMwscAjDxYPb1FuNiw==
   /from2/2.3.0:
     dependencies:
       inherits: 2.0.4
@@ -8147,6 +8148,16 @@ packages:
       node: '>=4.3.0 <5.0.0 || >=5.10'
     resolution:
       integrity: sha512-Jsmr89RcXGIwivFY21FcRrisYZfvLMTWx5kOLc+JTxtpBOG6xML0vzbc6SEQG2FO9/4Fc3wW4LVcB5DmGflaRw==
+  /loader-utils/1.2.3:
+    dependencies:
+      big.js: 5.2.2
+      emojis-list: 2.1.0
+      json5: 1.0.1
+    dev: true
+    engines:
+      node: '>=4.0.0'
+    resolution:
+      integrity: sha512-fkpz8ejdnEMG3s37wGL07iSBDg99O9D5yflE9RGNH3hRdx9SOwYfnGYdZOUIZitN8E+E2vkq3MUMYMvPYl5ZZA==
   /loader-utils/1.4.0:
     dependencies:
       big.js: 5.2.2
@@ -12489,10 +12500,6 @@ packages:
     dev: true
     resolution:
       integrity: sha512-ji9qxRnOVfcuLDySj9qzhGSEFVobyt1kIOSkj1qZzYLzq7Tos/oUUWvotUPQLlrsidqsK6tBH89Bc9kL5zHA6w==
-  /stackframe/1.2.0:
-    dev: true
-    resolution:
-      integrity: sha512-GrdeshiRmS1YLMYgzF16olf2jJ/IzxXY9lhKOskuVziubpTYcYqyOwYeJKzQkwy7uN0fYSsbsC4RQaXf9LCrYA==
   /state-toggle/1.0.3:
     dev: true
     resolution:
@@ -12894,6 +12901,21 @@ packages:
       stylelint: '>=11.1.1'
     resolution:
       integrity: sha512-CwuJ/g+aNADYkyFsrW8eyK/vVOh5INkMRJEx99RZD13SgqzexnRArG/R1LTs4h0Xsi9eAxIEzsyYW40nd90gcw==
+  /stylelint-scss/3.18.0_stylelint@13.7.2:
+    dependencies:
+      lodash: 4.17.20
+      postcss-media-query-parser: 0.2.3
+      postcss-resolve-nested-selector: 0.1.1
+      postcss-selector-parser: 6.0.4
+      postcss-value-parser: 4.1.0
+      stylelint: 13.7.2
+    dev: true
+    engines:
+      node: '>=8'
+    peerDependencies:
+      stylelint: ^8.0.0 || ^9.0.0 || ^10.0.0 || ^11.0.0 || ^12.0.0 || ^13.0.0
+    resolution:
+      integrity: sha512-LD7+hv/6/ApNGt7+nR/50ft7cezKP2HM5rI8avIdGaUWre3xlHfV4jKO/DRZhscfuN+Ewy9FMhcTq0CcS0C/SA==
   /stylelint-webpack-plugin/2.1.1_stylelint@13.7.2+webpack@4.44.2:
     dependencies:
       arrify: 2.0.1
@@ -14063,6 +14085,17 @@ packages:
       webpack: 4.x.x
     resolution:
       integrity: sha512-NVWBaz9k839ZH/sinurM+HcDvJOTXwSjYp1ku+5XKeOC03z8v5QitnK/x+lAxGXFyhdayoIf/GOpv85z3/xPag==
+  /webpack-inject-plugin/1.5.4_webpack@4.44.2:
+    dependencies:
+      '@types/loader-utils': 1.1.4
+      '@types/webpack': 4.41.22
+      loader-utils: 1.2.3
+      webpack: 4.44.2_93ca2875a658e9d1552850624e6b91c7
+    dev: true
+    peerDependencies:
+      webpack: '>=4.0.0'
+    resolution:
+      integrity: sha512-oDb30CX3YbKqGNfREANs7VnrFRrND/4aicd4Hcl0ZEOz6AdlJGIHzdX2/u1rq7r+VyRRUS1QDaKUoqHbZvfs6w==
   /webpack-merge/5.1.4:
     dependencies:
       clone-deep: 4.0.1
@@ -14592,7 +14625,6 @@ specifiers:
   eslint-webpack-plugin: ^2.1.0
   extract-svg-sprite-webpack-plugin: ^0.8.1
   file-loader: ^6.1.0
-  friendly-errors-webpack-plugin: ^1.7.0
   html-replace-webpack-plugin: ^2.5.6
   html-webpack-plugin: ^4.5.0
   image-minimizer-webpack-plugin: ^1.0.0
@@ -14629,10 +14661,12 @@ specifiers:
   stylelint-declaration-use-variable: ^1.7.2
   stylelint-high-performance-animation: ^1.5.1
   stylelint-no-unsupported-browser-features: ^4.0.0
+  stylelint-scss: ^3.18.0
   stylelint-webpack-plugin: ^2.1.1
   terser-webpack-plugin: ^4.2.2
   webpack: ^4.44.2
   webpack-cli: ^3.3.12
+  webpack-inject-plugin: ^1.5.4
   webpack-merge: ^5.1.4
   webpack-plugin-pwa-manifest: ^1.0.4
   webpack-rename-plugin: ^0.0.2

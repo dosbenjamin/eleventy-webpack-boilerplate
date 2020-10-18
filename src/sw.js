@@ -1,24 +1,51 @@
 const { generateSW } = require('workbox-build')
 
-const swDest = 'public/sw.js'
-
 generateSW({
-  swDest,
+  swDest: 'public/sw.js',
+  cacheId: 'workbox',
   globDirectory: 'public',
-  globPatterns: ['**/*.{html,json,js,css,xml,webmanifest,woff2,ttf}'],
-  // additionalManifestEntries: ['/offline/index.html'],
+  globPatterns: ['**/*.{css,js,eot,ttf,woff,woff2,otf}'],
   globIgnores: ['sitemap.xml'],
-  navigateFallback: '/index.html',
+  navigateFallback: '/offline',
   cleanupOutdatedCaches: true,
+  skipWaiting: true,
+  clientsClaim: true,
   mode: 'production',
   sourcemap: false,
   modifyURLPrefix: { '': '/' },
-  runtimeCaching: [{
-    urlPattern: /.(?:png|jpg|jpeg|svg|webp|gif)$/,
-    handler: 'CacheFirst',
-    options: {
-      cacheName: 'images',
-      expiration: { maxEntries: 10 }
+  maximumFileSizeToCacheInBytes: 50 * 1024 * 1024,
+  runtimeCaching: [
+    {
+      urlPattern: /(?:\/)$/,
+      handler: 'NetworkFirst',
+      options: {
+        cacheName: 'html',
+        expiration: {
+          maxAgeSeconds: 60 * 60 * 24 * 7
+        }
+      }
+    },
+    {
+      urlPattern: /\.(?:png|jpg|jpeg|gif|webp|svg)$/,
+      handler: 'CacheFirst',
+      options: {
+        cacheName: 'images',
+        expiration: {
+          maxEntries: 1000,
+          maxAgeSeconds: 60 * 60 * 24 * 365
+        }
+      }
+    },
+    {
+      urlPattern: /\.(?:webm|mp4)$/,
+      handler: 'CacheFirst',
+      options: {
+        cacheName: 'videos',
+        expiration: {
+          maxEntries: 1000,
+          maxAgeSeconds: 60 * 60 * 24 * 365
+        }
+      }
     }
-  }]
+  ]
 }).then(({ count }) => console.info(`Cached ${count} files with Service Worker`))

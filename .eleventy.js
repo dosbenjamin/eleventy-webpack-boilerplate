@@ -60,7 +60,10 @@ const hash = file => {
   const hash = md5File.sync(fileToHash).substring(0, 8)
   const newFilename = `${filename}.${hash}.${extension}`
   const pathToAsset = `${folder}/${newFilename}`
-  fs.renameSync(fileToHash, path.resolve(`public/${pathToAsset}`))
+  setTimeout(() => fs.rename(
+    fileToHash,
+    path.resolve(`public/${pathToAsset}`
+  ), () => {}), 300)
   return pathToAsset
 }
 
@@ -74,8 +77,7 @@ const find = file => {
   const { folder, filename, extension } = splitPath(file)
   return fs.readdirSync(`public/${folder}`)
     .filter(fn => fn.startsWith(filename))
-    .filter(fn => fn.endsWith(extension))
-    .pop()
+    .filter(fn => fn.endsWith(extension)).pop()
 }
 
 /**
@@ -95,7 +97,7 @@ const getAssetPath = file => {
  * Duplicate original webp image in the public folder.
  *
  * @param {string} file Relative path of the file starting from public folder.
- * @returns {void} Nothing.
+ * @returns {void} Nothing
  */
 const duplicateOriginal = file => {
   const { folder } = splitPath(file)
@@ -110,8 +112,8 @@ const duplicateOriginal = file => {
  *
  * @param {string} file Relative path of the file starting from public folder.
  * @param {number} size Width size of the image.
- * @param {string} callback Asynchronous function that returns the path of the file resized and hashed.
- * @returns {void} Nothing.
+ * @param {string} callback Function that returns the path of the file.
+ * @returns {void} Nothing
  */
 const resizeImage = (file, size, callback) => {
   const { folder, filename, extension } = splitPath(file)
@@ -120,36 +122,46 @@ const resizeImage = (file, size, callback) => {
   const sourceFolder = isWebp ? 'public' : 'src'
   const fileToResize = path.resolve(`${sourceFolder}/${file}`)
   const resizedFile = `${folder}/${filename}-${size}.${extension}`
-  sharp(fileToResize).resize(size)
+  sharp(fileToResize)
+    .resize(size)
     .toFile(path.resolve(`public/${resizedFile}`), () => callback(null, hash(resizedFile)))
-  setTimeout(() => isWebp && fs.unlink(fileToResize, () => {}), 1000)
 }
 
-/**
- * Inject server push header with hashed css.
- *
- * @returns {void} Nothing
- */
+const appendToFile = (template, from, to = from) => {
+  const source = path.resolve(`src/${from}`)
+  const destination = path.resolve(`public/${to}`)
+  fs.copyFile(
+    source,
+    destination,
+    fs.constants.COPYFILE_EXCL, () => fs.appendFileSync(destination, template)
+  )
+}
+
+const injectSitemap = () => {
+  const template = dedent`\nSitemap: ${APP_BASE_URL}/sitemap.xml
+  Sitemap: ${APP_BASE_URL}/sitemap.xml.gz
+  Sitemap: ${APP_BASE_URL}/sitemap.xml.br\n`
+  appendToFile(template, 'robots.txt')
+}
+
 const injectServerPush = () => {
-  const source = path.resolve('src/.htaccess')
-  const destination = path.resolve('public/.htaccess')
   const css = '/assets/css/main.css'
   const cssPath = getAssetPath(css)
-  const template = dedent`<IfModule http2_module>
-    SetEnvIf Cookie "cssloaded=1" cssloaded
-    <filesMatch "\.([hH][tT][mM][lL]?)">
-      Header add Link "<${cssPath}>;rel=preload;as=style" env=!cssloaded
-      Header add Set-Cookie "cssloaded=1; Path=/; Secure; HttpOnly" env=!cssloaded
-    </filesMatch>
-  </IfModule>`
-  fs.copyFile(source, destination, fs.constants.COPYFILE_EXCL, () => fs.appendFileSync(destination, template))
+  const template = dedent`\n<IfModule http2_module>
+      SetEnvIf Cookie "css-loaded=1" css-loaded
+      <filesMatch "\.([hH][tT][mM][lL]?)">
+          Header add Link "<${cssPath}>;rel=preload;as=style" env=!css-loaded
+          Header add Set-Cookie "css-loaded=1; Path=/; Secure; HttpOnly" env=!css-loaded
+      </filesMatch>
+  </IfModule>\n`
+  appendToFile(template, '.htaccess')
 }
 
 const config = {
   development: eleventyConfig => {
     eleventyConfig.addFilter('getPath', asset => asset)
     eleventyConfig.addFilter('resize', resizeImage => resizeImage)
-    eleventyConfig.setBrowserSyncConfig({ logLevel: 'info', open: true })
+    eleventyConfig.setBrowserSyncConfig({ logLevel: 'info' })
     fs.rename(sitemapLocation.production, sitemapLocation.development, () => {})
     fs.writeFileSync('src/views/includes/head.njk', '')
   },
@@ -159,9 +171,16 @@ const config = {
     eleventyConfig.addFilter('hash', hash)
     eleventyConfig.addNunjucksAsyncFilter('resize', resizeImage)
 
-    eleventyConfig.addShortcode('headTags', (title, description, thumbnail, url, type) => {
+    eleventyConfig.addShortcode('headTags', (
+      title,
+      description,
+      thumbnail,
+      url,
+      type,
+      robots
+      ) => {
       return dedent`<meta name="author" content="${APP_AUTHOR}">
-      <meta name="robots" content="index, follow">
+      <meta name="robots" content="${robots}">
       <link rel="canonical" href="${APP_BASE_URL}${url}">
       <meta property="og:title" content="${title} ${APP_TITLE_DIVIDER} ${APP_TITLE}">
       <meta property="og:description" content="${description}">
@@ -185,26 +204,27 @@ const config = {
       </link>`
       try {
         const fonts = fs.readdirSync('public/assets/fonts')
-        const htmlTags = fonts.filter(font => font.endsWith('.woff2')).map(font => toHtml(font))
+        const htmlTags = fonts
+          .filter(font => font.endsWith('.woff2'))
+          .map(font => toHtml(font))
         return htmlTags.join('')
       } catch (error) { return '' }
     })
 
     eleventyConfig.addTransform('posthtml', async (content, outputPath) => {
-      const file = await path.resolve('.posthtmlrc.js')
+      const file = path.resolve('.posthtmlrc.js')
       const config = await require(file)
       const result = await posthtml(config.plugins).process(content)
       return await result.html
     })
 
     eleventyConfig.addPlugin(pluginSitemap, {
-      sitemap: {
-        hostname: APP_BASE_URL
-      }
+      sitemap: { hostname: APP_BASE_URL }
     })
 
     fs.rename(sitemapLocation.development, sitemapLocation.production, () => {})
-    eleventyConfig.addPassthroughCopy({ 'src/robots.txt': 'robots.txt' })
+
+    injectSitemap()
     injectServerPush()
   },
 
@@ -223,4 +243,7 @@ const config = {
 
 }
 
-module.exports = eleventyConfig => assign(config.common(eleventyConfig), config[APP_ENV](eleventyConfig))
+module.exports = eleventyConfig => assign(
+  config.common(eleventyConfig),
+  config[APP_ENV](eleventyConfig)
+)

@@ -1,5 +1,3 @@
-// !! OK
-
 const imagemin = require('imagemin-keep-folder')
 const imageminMozjpeg = require('imagemin-mozjpeg')
 const imageminPngquant = require('imagemin-pngquant')
@@ -12,6 +10,7 @@ imagemin(['public/**/*.{jpg,jpeg,png,svg,gif}'], {
     imageminPngquant({ quality: [0.65, 0.8] }),
     imageminSvgo({
       plugins: [{
+        inlineStyles: false,
         removeDimensions: true,
         removeRasterImages: true,
         cleanupNumericValues: { floatPrecision: 1 }

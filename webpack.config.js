@@ -1,17 +1,18 @@
 const path = require('path')
 const fs = require('fs')
 const { merge } = require('webpack-merge')
+const globImporter = require('node-sass-glob-importer')
 const dedent = require('dedent')
 
 const TerserPlugin = require('terser-webpack-plugin')
-const globImporter = require('node-sass-glob-importer')
-const MiniCssExtractPlugin = require('mini-css-extract-plugin')
-const HtmlWebpackPlugin = require('html-webpack-plugin')
-const ExcludeAssetsPlugin = require('@ianwalter/exclude-assets-plugin')
-const WebpackPluginPWAManifest = require('webpack-plugin-pwa-manifest')
-const HtmlReplaceWebpackPlugin = require('html-replace-webpack-plugin')
-const ImageMinimizerPlugin = require('image-minimizer-webpack-plugin')
 const SpritePlugin = require('extract-svg-sprite-webpack-plugin')
+const MiniCSSExtractPlugin = require('mini-css-extract-plugin')
+const HTMLPlugin = require('html-webpack-plugin')
+const HTMLReplacePlugin = require('html-replace-webpack-plugin')
+const ExcludeAssetsPlugin = require('@ianwalter/exclude-assets-plugin')
+const PWAManifestPlugin = require('webpack-plugin-pwa-manifest')
+const ImageMinimizerPlugin = require('image-minimizer-webpack-plugin')
+const InjectPlugin = require('webpack-inject-plugin').default
 const CopyPlugin = require('copy-webpack-plugin')
 const StylelintPlugin = require('stylelint-webpack-plugin')
 const ESLintPlugin = require('eslint-webpack-plugin')
@@ -27,45 +28,41 @@ const {
   APP_WEBP
 } = process.env
 
-const isProd = APP_ENV === 'production'
+const head = {
+  development: `<link rel="icon" href="/${APP_FAVICON}">`,
+  production: '{% headTags title, description, thumbnail, page.url, type, robots %}'
+}
 
 const filename = { development: '[name]', production: '[name].[contenthash:8]' }
 
-const head = {
-  development: `<link rel="icon" href="/${APP_FAVICON}">`,
-  production: '{% headTags title, description, thumbnail, page.url, type %}'
+const entries = ['./src/assets/js/main.js', './src/assets/scss/main.scss']
+
+const addToEntries = folder => {
+  const exclude = ['theme', '.keep', '.DS_Store']
+  const assets = fs.readdirSync(folder)
+    .filter(item => !exclude.includes(item))
+  entries.push(...assets.map(asset => folder + asset))
+  return assets
 }
 
-/**
- * Check wich assets to include as entries with js and scss.
- *
- * @returns {object} Array of entries and images to convert in webp.
- */
-const getAssets = () => {
-  const entries = ['./src/assets/js/main.js', './src/assets/scss/main.scss']
-  const exclude = ['import', '.keep', '.DS_Store']
-  const loadAssets = folder => {
-    const assets = fs.readdirSync(folder).filter(item => !exclude.includes(item))
-    entries.push(...assets.map(asset => folder + asset))
-    return assets
-  }
-  const images = loadAssets('./src/assets/images/')
-  loadAssets('./src/assets/videos/')
-  return { images, entries }
-}
+const images = addToEntries('./src/assets/images/content/')
+addToEntries('./src/assets/images/other/')
+addToEntries('./src/assets/videos/')
 
-const { entries, images } = getAssets()
-
-// TODO: Service Worker -> Which files ??
-// TODO: Writing readme.md & clean package.json
+const isProd = APP_ENV === 'production'
 
 const config = {
   development: {
     devtool: 'source-map',
-    plugins: [new CopyPlugin({ patterns: [{ from: `src/${APP_FAVICON}`, to: `${APP_FAVICON}` }] })]
+    plugins: [
+      new CopyPlugin({
+        patterns: [{ from: `src/${APP_FAVICON}`, to: `${APP_FAVICON}` }]
+      })
+    ]
   },
   production: {
     optimization: {
+      usedExports: true,
       minimize: true,
       minimizer: [
         new TerserPlugin({
@@ -74,26 +71,58 @@ const config = {
           parallel: true,
           terserOptions: { output: { comments: false } }
         })
-      ],
-      usedExports: true,
-      sideEffects: true
+      ]
+    },
+    module: {
+      rules: [{
+        test: /\.js$/,
+        exclude: /(node_modules)/,
+        use: ['babel-loader']
+      }]
     },
     plugins: [
-      new WebpackPluginPWAManifest({
+      new InjectPlugin(() => {
+        return `if ('serviceWorker' in navigator) {
+          window.addEventListener('load', () => navigator.serviceWorker.register('/sw.js'))
+        }`
+      }),
+      new SpritePlugin({
+        publicPath: '/',
+        filename: 'assets/images/sprite.[contenthash:8].svg',
+        spriteType: 'stack'
+      }),
+      new PWAManifestPlugin({
         name: APP_TITLE,
         shortName: APP_SHORT_TITLE,
         display: 'minimal-ui',
         startURL: '/',
         theme: APP_COLOR,
-        generateIconOptions: { baseIcon: `./src/${APP_FAVICON}`, sizes: [192, 512], genFavicons: true }
+        generateIconOptions: {
+          baseIcon: `./src/${APP_FAVICON}`,
+          sizes: [192, 512],
+          genFavicons: true
+        }
       }),
-      new HtmlReplaceWebpackPlugin([
-        { pattern: '/browserconfig.xml', replacement: '{{ \'/browserconfig.xml\' | hash }}' },
-        { pattern: '/manifest.webmanifest', replacement: '{{ \'/manifest.webmanifest\' | hash }}' }
+      new HTMLReplacePlugin([
+        {
+          pattern: '/browserconfig.xml',
+          replacement: "{{ '/browserconfig.xml' | hash }}"
+        },
+        {
+          pattern: '/manifest.webmanifest',
+          replacement: "{{ '/manifest.webmanifest' | hash }}"
+        },
+        { pattern: 'sizes="180x180"', replacement: '' }
       ]),
       {
-        apply: (compiler) => {
-          const start = console.info('\x1b[46m\x1b[30m', 'START', '\x1b[0m\x1b[36m', 'The project is building! 🏗\n', '\x1b[0m')
+        apply: compiler => {
+          const start = console.info(
+            '\x1b[46m\x1b[30m',
+            'START',
+            '\x1b[0m\x1b[36m',
+            'The project is building! 🏗\n',
+            '\x1b[0m'
+          )
           const done = console.info('Bundled all the static assets')
           compiler.hooks.beforeRun.tap('BeforeRunPlugin', () => start)
           compiler.hooks.afterEmit.tap('AfterEmitPlugin', () => done)
@@ -105,30 +134,58 @@ const config = {
     mode: APP_ENV,
     entry: { main: entries },
     stats: { all: false, warnings: true, errors: true },
-    output: { path: path.resolve('public'), filename: `assets/js/${filename[APP_ENV]}.js` },
+    output: {
+      path: path.resolve('public'),
+      filename: `assets/js/${filename[APP_ENV]}.js`
+    },
     module: {
       rules: [
-        { test: /\.js$/, exclude: /(node_modules)/, use: ['babel-loader'] },
         {
           test: /\.scss$/,
           use: [
-            MiniCssExtractPlugin.loader,
+            MiniCSSExtractPlugin.loader,
             'css-loader',
-            { loader: 'postcss-loader', options: { postcssOptions: { config: isProd, hideNothingWarning: true } } },
+            {
+              loader: 'postcss-loader',
+              options: {
+                postcssOptions: { config: isProd, hideNothingWarning: true }
+              }
+            },
             SpritePlugin.cssLoader,
             {
               loader: 'sass-loader',
-              options: { sassOptions: { importer: globImporter(), outputStyle: 'expanded' } }
+              options: {
+                sassOptions: {
+                  importer: globImporter(),
+                  outputStyle: 'expanded'
+                }
+              }
             }
           ]
         },
-        { test: /\.svg$/, loader: SpritePlugin.loader },
+        {
+          test: /\.svg$/,
+          use: isProd
+            ? SpritePlugin.loader
+            : {
+              loader: 'file-loader',
+              options: {
+                publicPath: '/',
+                name: `assets/images/${filename[APP_ENV]}.[ext]`
+              }
+            }
+        },
         {
           test: /\.(png|jpe?g|gif|webp)$/i,
-          use: [{
-            loader: 'file-loader',
-            options: { publicPath: '/', name: `assets/images/${filename[APP_ENV]}.[ext]` }
-          }]
+          use: [
+            {
+              loader: 'file-loader',
+              options: {
+                publicPath: '/',
+                name: `assets/images/${filename[APP_ENV]}.[ext]`
+              }
+            }
+          ]
         },
         {
           test: /\.(png|jpe?g)$/i,
@@ -139,35 +196,50 @@ const config = {
                 cache: true,
                 deleteOriginalAssets: false,
                 filename: 'assets/images/[name].webp',
-                filter: (source, sourcePath) => images.some(img => sourcePath.includes(img) && APP_WEBP === 'true'),
-                minimizerOptions: { plugins: [['imagemin-webp', { quality: 80 }]] }
+                filter: (source, sourcePath) => images
+                  .some(img => sourcePath.includes(img) && APP_WEBP === 'true'),
+                minimizerOptions: {
+                  plugins: [['imagemin-webp', { quality: 80 }]]
+                }
               }
             }
           ]
         },
         {
           test: /\.(mp4|webm)$/i,
-          use: [{
-            loader: 'file-loader',
-            options: { publicPath: '/', name: `assets/videos/${filename[APP_ENV]}.[ext]` }
-          }]
+          use: [
+            {
+              loader: 'file-loader',
+              options: {
+                publicPath: '/',
+                name: `assets/videos/${filename[APP_ENV]}.[ext]`
+              }
+            }
+          ]
         },
         {
           test: /\.(woff|woff2|otf|ttf|eot)$/i,
-          use: [{
-            loader: 'file-loader',
-            options: { publicPath: '/', name: `assets/fonts/${filename[APP_ENV]}.[ext]` }
-          }]
+          use: [
+            {
+              loader: 'file-loader',
+              options: {
+                publicPath: '/',
+                name: `assets/fonts/${filename[APP_ENV]}.[ext]`
+              }
+            }
+          ]
         }
       ]
     },
     plugins: [
-      new MiniCssExtractPlugin({ filename: `assets/css/${filename[APP_ENV]}.css` }),
-      new HtmlWebpackPlugin({
+      new MiniCSSExtractPlugin({
+        filename: `assets/css/${filename[APP_ENV]}.css`
+      }),
+      new HTMLPlugin({
         templateContent: dedent`<head>
           <meta charset="UTF-8">
           <meta name="viewport" content="width=device-width, initial-scale=1.0">
-          ${isProd ? '{% preloadFonts \'\' %}' : ''}
+          ${isProd ? "{% preloadFonts '' %}" : ''}
           <link href="{{ '/assets/css/main.css' | getPath }}" rel="stylesheet">
           <script defer src="{{ '/assets/js/main.js' | getPath }}"></script>
           <title>{{ title }} ${APP_TITLE_DIVIDER} ${APP_TITLE}</title>
@@ -180,11 +252,6 @@ const config = {
         cache: true
       }),
       new ExcludeAssetsPlugin(),
-      new SpritePlugin({
-        publicPath: '/',
-        filename: isProd ? 'assets/images/sprite.[contenthash:8].svg' : 'assets/images/sprite.svg',
-        spriteType: 'stack'
-      }),
       new StylelintPlugin(),
       new ESLintPlugin()
     ]

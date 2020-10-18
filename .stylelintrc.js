@@ -1,17 +1,32 @@
-// !! OK
-
 module.exports = {
   plugins: [
     'stylelint-no-unsupported-browser-features',
     'stylelint-declaration-block-no-ignored-properties',
     'stylelint-declaration-use-variable',
     'stylelint-a11y',
-    'stylelint-high-performance-animation'
+    'stylelint-high-performance-animation',
+    'stylelint-scss'
   ],
   ignoreFiles: ['**/*.svg', 'public/**/*.css'],
   extends: 'stylelint-config-standard',
   rules: {
     'at-rule-no-unknown': null,
+    'at-rule-empty-line-before': [
+      'always',
+      { 'ignoreAtRules': ['else', 'import'] }
+    ],
+    'block-opening-brace-space-before': 'always',
+    'block-closing-brace-newline-after': [
+      'always',
+      { 'ignoreAtRules': ['if', 'else'] }
+    ],
+    'at-rule-name-space-after': 'always',
+    'rule-empty-line-before': 'always',
+    'scss/at-else-closing-brace-newline-after': 'always-last-in-chain',
+    'scss/at-else-closing-brace-space-after': 'always-intermediate',
+    'scss/at-else-empty-line-before': 'never',
+    'scss/at-if-closing-brace-newline-after': 'always-last-in-chain',
+    'scss/at-if-closing-brace-space-after': 'always-intermediate',
     'font-family-name-quotes': 'always-where-recommended',
     'function-url-quotes': 'always',
     'selector-attribute-quotes': 'always',
