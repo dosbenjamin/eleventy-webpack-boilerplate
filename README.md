@@ -51,7 +51,7 @@ APP_WEBP = true
 - Copy `.htaccess` to `public` folder
 - Generate favicons, `manifest.webmanifest`, `browserconfig.xml` and inject them inside `*.html`
 - Generate `sitemap.xml` and paste it in `public`
-- Generate static site with [Eleventy](https://www.11ty.dev) (check [`.eleventy.js`](https://github.com/dosbenjamin/eleventy-webpack-boilerplate/blob/main/.eleventy.js))
+- Generate static site with [Eleventy](https://www.11ty.dev) (check [`eleventy.js`](https://github.com/dosbenjamin/eleventy-webpack-boilerplate/blob/main/eleventy.js))
 - Inject `main.css` path in `.htaccess` for HTTP/2 Server Push
 - Inject resources hint in `*.html` to preload `*.woff2` fonts
 - Inject SEO meta tags (Twitter and Open Graph) in `*.html`

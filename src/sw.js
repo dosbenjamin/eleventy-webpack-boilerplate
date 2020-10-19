@@ -1,4 +1,17 @@
 const { generateSW } = require('workbox-build')
+const path = require('path')
+const md5File = require('md5-file')
+
+require('dotenv').config()
+const { APP_OFFLINE } = process.env
+
+/**
+ * Content hash a file.
+ *
+ * @param {string} file File to hash.
+ * @returns {string} Content hash.
+ */
+const getRevision = file => md5File.sync(path.resolve(file))
 
 generateSW({
   swDest: 'public/sw.js',
@@ -6,7 +19,11 @@ generateSW({
   globDirectory: 'public',
   globPatterns: ['**/*.{css,js,eot,ttf,woff,woff2,otf}'],
   globIgnores: ['sitemap.xml'],
-  navigateFallback: '/offline',
+  additionalManifestEntries: [{
+    url: `${APP_OFFLINE}/index.html`,
+    revision: getRevision(`public${APP_OFFLINE}/index.html`)
+  }],
+  navigateFallback: APP_OFFLINE,
   cleanupOutdatedCaches: true,
   skipWaiting: true,
   clientsClaim: true,

@@ -25,7 +25,7 @@ const sitemapLocation = {
 /**
  * Extract the folder from file path.
  *
- * @param {string} file Relative path of the file starting from public folder.
+ * @param {string} file Relative file path starting from `public` folder.
  * @returns {string} Folder extracted from the complete file path.
  */
 const getFolderPath = file => {
@@ -35,9 +35,9 @@ const getFolderPath = file => {
 }
 
 /**
- * Split the path of the file.
+ * Split file path.
  *
- * @param {string} file Relative path of the file starting from public folder.
+ * @param {string} file Relative file path starting from `public` folder.
  * @returns {object} Splitted folder, filename and extension of the file.
  */
 const splitPath = file => {
@@ -51,8 +51,8 @@ const splitPath = file => {
 /**
  * Hash and rename a file based on its content.
  *
- * @param {string} file Relative path of the file starting from public folder.
- * @returns {string} New path of the file with hash.
+ * @param {string} file Relative file path starting from `public` folder.
+ * @returns {string} New file path with hash.
  */
 const hash = file => {
   const { folder, filename, extension } = splitPath(file)
@@ -60,18 +60,16 @@ const hash = file => {
   const hash = md5File.sync(fileToHash).substring(0, 8)
   const newFilename = `${filename}.${hash}.${extension}`
   const pathToAsset = `${folder}/${newFilename}`
-  setTimeout(() => fs.rename(
-    fileToHash,
-    path.resolve(`public/${pathToAsset}`
-  ), () => {}), 300)
+  const destination = path.resolve(`public/${pathToAsset}`)
+  setTimeout(() => fs.rename(fileToHash, destination, () => {}), 300)
   return pathToAsset
 }
 
 /**
- * Find if a file exists in the public folder.
+ * Check if a file exists in the `public` folder.
  *
- * @param {string} file Relative path of the file starting from public folder.
- * @returns {string} Filename and extension of the file found.
+ * @param {string} file Relative file path starting from `public` folder.
+ * @returns {string} Name and extension of the file found.
  */
 const find = file => {
   const { folder, filename, extension } = splitPath(file)
@@ -83,8 +81,8 @@ const find = file => {
 /**
  * Filter to find and inject the right path when the file is hashed.
  *
- * @param {string} file Relative path of the file starting from public folder.
- * @returns {string} New path of the file with hash.
+ * @param {string} file Relative file path starting from `public` folder.
+ * @returns {string} New file path with hash.
  */
 const getAssetPath = file => {
   if (file.endsWith('webp')) return hash(file)
@@ -94,9 +92,9 @@ const getAssetPath = file => {
 }
 
 /**
- * Duplicate original webp image in the public folder.
+ * Duplicate original `webp` image in the `public` folder.
  *
- * @param {string} file Relative path of the file starting from public folder.
+ * @param {string} file Relative file path starting from `public` folder.
  * @returns {void} Nothing
  */
 const duplicateOriginal = file => {
@@ -110,9 +108,9 @@ const duplicateOriginal = file => {
 /**
  * Filter to resize images at the right size.
  *
- * @param {string} file Relative path of the file starting from public folder.
- * @param {number} size Width size of the image.
- * @param {string} callback Function that returns the path of the file.
+ * @param {string} file Relative file path starting from `public` folder.
+ * @param {number} size Image width size.
+ * @param {string} callback Function that returns file path.
  * @returns {void} Nothing
  */
 const resizeImage = (file, size, callback) => {
@@ -122,11 +120,20 @@ const resizeImage = (file, size, callback) => {
   const sourceFolder = isWebp ? 'public' : 'src'
   const fileToResize = path.resolve(`${sourceFolder}/${file}`)
   const resizedFile = `${folder}/${filename}-${size}.${extension}`
+  const destination = path.resolve(`public/${resizedFile}`)
   sharp(fileToResize)
     .resize(size)
-    .toFile(path.resolve(`public/${resizedFile}`), () => callback(null, hash(resizedFile)))
+    .toFile(destination, () => callback(null, hash(resizedFile)))
 }
 
+/**
+ * Append things to a file and copy it to a new destination.
+ *
+ * @param {string} template Things to inject in the file.
+ * @param {string} from File source location.
+ * @param {string} to File destination path.
+ * @returns {void} Nothing
+ */
 const appendToFile = (template, from, to = from) => {
   const source = path.resolve(`src/${from}`)
   const destination = path.resolve(`public/${to}`)
@@ -137,6 +144,11 @@ const appendToFile = (template, from, to = from) => {
   )
 }
 
+/**
+ * Inject `sitemap.xml` links to `robots.txt`.
+ *
+ * @returns {void} Nothing
+ */
 const injectSitemap = () => {
   const template = dedent`\nSitemap: ${APP_BASE_URL}/sitemap.xml
   Sitemap: ${APP_BASE_URL}/sitemap.xml.gz
@@ -144,6 +156,11 @@ const injectSitemap = () => {
   appendToFile(template, 'robots.txt')
 }
 
+/**
+ * Inject HTTP/2 server push with hashed `main.css` to `.htaccess`.
+ *
+ * @returns {void} Nothing
+ */
 const injectServerPush = () => {
   const css = '/assets/css/main.css'
   const cssPath = getAssetPath(css)
@@ -178,7 +195,7 @@ const config = {
       url,
       type,
       robots
-      ) => {
+    ) => {
       return dedent`<meta name="author" content="${APP_AUTHOR}">
       <meta name="robots" content="${robots}">
       <link rel="canonical" href="${APP_BASE_URL}${url}">

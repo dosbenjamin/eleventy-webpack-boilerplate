@@ -37,6 +37,12 @@ const filename = { development: '[name]', production: '[name].[contenthash:8]' }
 
 const entries = ['./src/assets/js/main.js', './src/assets/scss/main.scss']
 
+/**
+ * Add files as Webpack entries.
+ *
+ * @param {string} folder Folder path where files are located.
+ * @returns {array} Files added as entry.
+ */
 const addToEntries = folder => {
   const exclude = ['theme', '.keep', '.DS_Store']
   const assets = fs.readdirSync(folder)
