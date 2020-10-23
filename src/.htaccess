@@ -612,6 +612,12 @@ AddDefaultCharset utf-8
 # # Custom configurations                                              #
 # ######################################################################
 
+ErrorDocument 404 /404/
+
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteCond %{REQUEST_URI} !/$
+RewriteRule ^(.*)$ /$1/ [L]
+
 <IfModule LiteSpeed>
     SmartPush no-cookie
 </IfModule>

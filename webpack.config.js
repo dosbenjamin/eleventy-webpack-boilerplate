@@ -87,9 +87,14 @@ const config = {
       }]
     },
     plugins: [
+      new CopyPlugin({
+        patterns: [{ from: 'src/sw.js', to: 'sw.js' }]
+      }),
       new InjectPlugin(() => {
         return `if ('serviceWorker' in navigator) {
-          window.addEventListener('load', () => navigator.serviceWorker.register('/sw.js'))
+          window.addEventListener('load', () => {
+            navigator.serviceWorker.register('/sw.js')
+          })
         }`
       }),
       new SpritePlugin({

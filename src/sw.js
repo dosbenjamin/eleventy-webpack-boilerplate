@@ -1,68 +1,62 @@
-const { generateSW } = require('workbox-build')
-const path = require('path')
-const md5File = require('md5-file')
+const precache = '/offline'
 
-require('dotenv').config()
-const { APP_OFFLINE } = process.env
+const installSW = async () => {
+  const cache = await caches.open('pages')
+  await cache.add(precache)
+  self.skipWaiting()
+}
 
-/**
- * Content hash a file.
- *
- * @param {string} file File to hash.
- * @returns {string} Content hash.
- */
-const getRevision = file => md5File.sync(path.resolve(file))
+const addToCache = async request => {
+  const storage = request.mode === 'navigate' ? 'pages' : 'assets'
+  const cache = await caches.open(storage)
 
-generateSW({
-  swDest: 'public/sw.js',
-  cacheId: 'workbox',
-  globDirectory: 'public',
-  globPatterns: ['**/*.{css,js,eot,ttf,woff,woff2,otf}'],
-  globIgnores: ['sitemap.xml'],
-  additionalManifestEntries: [{
-    url: `${APP_OFFLINE}/index.html`,
-    revision: getRevision(`public${APP_OFFLINE}/index.html`)
-  }],
-  navigateFallback: APP_OFFLINE,
-  cleanupOutdatedCaches: true,
-  skipWaiting: true,
-  clientsClaim: true,
-  mode: 'production',
-  sourcemap: false,
-  modifyURLPrefix: { '': '/' },
-  maximumFileSizeToCacheInBytes: 50 * 1024 * 1024,
-  runtimeCaching: [
-    {
-      urlPattern: /(?:\/)$/,
-      handler: 'NetworkFirst',
-      options: {
-        cacheName: 'html',
-        expiration: {
-          maxAgeSeconds: 60 * 60 * 24 * 7
-        }
-      }
-    },
-    {
-      urlPattern: /\.(?:png|jpg|jpeg|gif|webp|svg)$/,
-      handler: 'CacheFirst',
-      options: {
-        cacheName: 'images',
-        expiration: {
-          maxEntries: 1000,
-          maxAgeSeconds: 60 * 60 * 24 * 365
-        }
-      }
-    },
-    {
-      urlPattern: /\.(?:webm|mp4)$/,
-      handler: 'CacheFirst',
-      options: {
-        cacheName: 'videos',
-        expiration: {
-          maxEntries: 1000,
-          maxAgeSeconds: 60 * 60 * 24 * 365
-        }
-      }
-    }
-  ]
-}).then(({ count }) => console.info(`Cached ${count} files with Service Worker`))
+  if (storage === 'assets') {
+    const path = request.url.replace(request.referrer, '')
+    const [filename = 0, hash = 1, extension = 2] = path.split('.')
+    const currentlyCached = await cache.keys()
+    const [outdated = 0] = currentlyCached
+      .filter(({url}) => (url.includes(filename) && url.includes(extension)))
+    cache.delete(outdated)
+  }
+
+  cache.add(request)
+}
+
+const fetchRequest = async (request, event) => {
+  const response = await fetch(request)
+  const fullfilled = response.ok && response.status < 400
+  if (fullfilled) event.waitUntil(addToCache(request))
+  return response
+}
+
+const matchRequest = request => caches.match(request)
+
+const networkFirst = async (request, event) => {
+  const response = await fetchRequest(request, event)
+    .catch(() => matchRequest(request))
+  if (response) return response
+  return matchRequest('/offline')
+}
+
+const cacheFirst = async (request, event) => {
+  const response = await matchRequest(request)
+  if (response) return response
+  return fetchRequest(request, event)
+}
+
+self.addEventListener('install', event => event.waitUntil(installSW()))
+
+self.addEventListener('activate', event => event.waitUntil(self.clients.claim()))
+
+self.addEventListener('fetch', event => {
+  const { request } = event
+  if (request.method !== 'GET') return
+  if (request.referrerPolicy === 'unsafe-url') return
+
+  if (request.mode === 'navigate') {
+    event.respondWith(networkFirst(request, event))
+    return
+  }
+
+  event.respondWith(cacheFirst(request, event))
+})
