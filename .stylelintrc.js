@@ -13,7 +13,7 @@ module.exports = {
     'at-rule-no-unknown': null,
     'at-rule-empty-line-before': [
       'always',
-      { 'ignoreAtRules': ['else', 'import'] }
+      { 'ignoreAtRules': ['else', 'import', 'include'] }
     ],
     'block-opening-brace-space-before': 'always',
     'block-closing-brace-newline-after': [

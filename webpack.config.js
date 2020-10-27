@@ -126,17 +126,16 @@ const config = {
         { pattern: 'sizes="180x180"', replacement: '' }
       ]),
       {
-        apply: compiler => {
-          const start = console.info(
-            '\x1b[46m\x1b[30m',
-            'START',
-            '\x1b[0m\x1b[36m',
-            'The project is building! 🏗\n',
-            '\x1b[0m'
-          )
-          const done = console.info('Bundled all the static assets')
-          compiler.hooks.beforeRun.tap('BeforeRunPlugin', () => start)
-          compiler.hooks.afterEmit.tap('AfterEmitPlugin', () => done)
+        apply: ({ hooks }) => {
+          const start = '\x1b[46m\x1b[30m START \x1b[0m\x1b[36m ' +
+            'The project is building! 🏗\n \x1b[0m'
+          const done = 'Bundled all the static assets'
+          hooks.beforeRun.tap('BeforeRunPlugin', () => console.info(start))
+          hooks.afterEmit.tap('AfterEmitPlugin', ({ hash }) => {
+            const serviceWorker = path.resolve('public/sw.js')
+            fs.appendFileSync(serviceWorker, `//${hash}`)
+            console.info(done)
+          })
         }
       }
     ]

@@ -23,6 +23,24 @@ const sitemapLocation = {
 }
 
 /**
+ * Add cache to specific `function`.
+ *
+ * @param fn Function that need memoization.
+ * @returns {object} Cache containing calculated entries.
+ */
+const memoize = fn => {
+  const cache = {}
+  return (...args) => {
+    const argsKey = JSON.stringify(args)
+    if (!cache[argsKey]) cache[argsKey] = fn(...args)
+    return cache[argsKey]
+  }
+}
+
+const assetsSubfolder = /\/(content|other|theme)/ig
+const removeSubfolder = memoize(file => file.replace(assetsSubfolder, ''))
+
+/**
  * Extract the folder from file path.
  *
  * @param {string} file Relative file path starting from `public` folder.
@@ -31,7 +49,7 @@ const sitemapLocation = {
 const getFolderPath = file => {
   const folder = file.split('.')[0].split('/')
   folder.pop()
-  return folder.join('/')
+  return removeSubfolder(folder.join('/'))
 }
 
 /**
@@ -40,13 +58,13 @@ const getFolderPath = file => {
  * @param {string} file Relative file path starting from `public` folder.
  * @returns {object} Splitted folder, filename and extension of the file.
  */
-const splitPath = file => {
+const splitPath = memoize(file => {
   return {
     folder: getFolderPath(file),
     filename: file.split('/').pop().split('.')[0],
     extension: file.split('.').pop()
   }
-}
+})
 
 /**
  * Hash and rename a file based on its content.
@@ -54,16 +72,16 @@ const splitPath = file => {
  * @param {string} file Relative file path starting from `public` folder.
  * @returns {string} New file path with hash.
  */
-const hash = file => {
+const hash = memoize(file => {
   const { folder, filename, extension } = splitPath(file)
   const fileToHash = path.resolve(`public/${file}`)
   const hash = md5File.sync(fileToHash).substring(0, 8)
   const newFilename = `${filename}.${hash}.${extension}`
   const pathToAsset = `${folder}/${newFilename}`
   const destination = path.resolve(`public/${pathToAsset}`)
-  setTimeout(() => fs.rename(fileToHash, destination, () => {}), 300)
+  setTimeout(() => fs.rename(fileToHash, destination, () => {}), 1000)
   return pathToAsset
-}
+})
 
 /**
  * Check if a file exists in the `public` folder.
@@ -84,26 +102,12 @@ const find = file => {
  * @param {string} file Relative file path starting from `public` folder.
  * @returns {string} New file path with hash.
  */
-const getAssetPath = file => {
-  if (file.endsWith('webp')) return hash(file)
+const getAssetPath = memoize(file => {
+  if (file.endsWith('webp')) return hash(removeSubfolder(file))
   const { folder } = splitPath(file)
   const asset = find(file)
   return `${folder}/${asset}`
-}
-
-/**
- * Duplicate original `webp` image in the `public` folder.
- *
- * @param {string} file Relative file path starting from `public` folder.
- * @returns {void} Nothing
- */
-const duplicateOriginal = file => {
-  const { folder } = splitPath(file)
-  const originalFile = find(file)
-  const source = path.resolve(`public/${folder}/${originalFile}`)
-  const destination = `${path.resolve('public/')}${file}`
-  fs.copyFile(source, destination, fs.constants.COPYFILE_EXCL, () => {})
-}
+})
 
 /**
  * Filter to resize images at the right size.
@@ -116,9 +120,10 @@ const duplicateOriginal = file => {
 const resizeImage = (file, size, callback) => {
   const { folder, filename, extension } = splitPath(file)
   const isWebp = extension === 'webp'
-  isWebp && duplicateOriginal(file)
-  const sourceFolder = isWebp ? 'public' : 'src'
-  const fileToResize = path.resolve(`${sourceFolder}/${file}`)
+  const sourceFile = isWebp
+    ? `public${folder}/${filename}.${extension}`
+    : `src${file}`
+  const fileToResize = path.resolve(sourceFile)
   const resizedFile = `${folder}/${filename}-${size}.${extension}`
   const destination = path.resolve(`public/${resizedFile}`)
   sharp(fileToResize)
@@ -157,7 +162,7 @@ const injectSitemap = () => {
 }
 
 /**
- * Inject HTTP/2 server push with hashed `main.css` to `.htaccess`.
+ * Inject HTTP/2 Server Push with hashed `main.css` to `.htaccess`.
  *
  * @returns {void} Nothing
  */
@@ -176,8 +181,8 @@ const injectServerPush = () => {
 
 const config = {
   development: eleventyConfig => {
-    eleventyConfig.addFilter('getPath', asset => asset)
-    eleventyConfig.addFilter('resize', resizeImage => resizeImage)
+    eleventyConfig.addFilter('getPath', asset => removeSubfolder(asset))
+    eleventyConfig.addFilter('resize', asset => removeSubfolder(asset))
     eleventyConfig.setBrowserSyncConfig({ logLevel: 'info' })
     fs.rename(sitemapLocation.production, sitemapLocation.development, () => {})
     fs.writeFileSync('src/views/includes/head.njk', '')

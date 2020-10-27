@@ -1,16 +1,19 @@
-@mixin svg ($path, $size) {
-  $size: $size / 100;
+@mixin svg ($path, $largeSide, $ratio, $vertical: false) {
 
-  overflow: hidden;
+  @if $vertical {
+    width: $largeSide / $ratio;
+    height: $largeSide;
+  } @else {
+    width: $largeSide;
+    height: $largeSide * $ratio;
+  }
 
   &::before {
     content: '';
     display: block;
-    background: url(#{$path}) no-repeat;
+    background: url($path) no-repeat;
     background-position: center;
     background-size: 100%;
-    transform: scale(#{$size});
-    width: 100%;
     height: 100%;
   }
 }

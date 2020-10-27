@@ -2,7 +2,7 @@
 
 title: Offline
 eleventyExcludeFromCollections: true
-robots: noindex, nofollow
+robots: noindex, follow
 layout: base
 
 ---

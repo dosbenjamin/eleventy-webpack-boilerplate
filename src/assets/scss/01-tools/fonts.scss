@@ -15,7 +15,7 @@ $fonts: (
   $fontWeight,
   $fontStyle,
   $fontDisplay,
-  $fontFormats) {
+  $fontExtensions) {
 
   @font-face {
     font-family: $fontFamily;
@@ -23,8 +23,16 @@ $fonts: (
     font-style: $fontStyle;
     display: $fontDisplay;
 
-    @each $fontFormat in $fontFormats {
-      src: url('../fonts/#{$fontFile}.#{$fontFormat}') format($fontFormat);
+    @each $fontExtension in $fontExtensions {
+      $fontFormat: $fontExtension;
+
+      @if ($fontExtension == 'ttf') {
+        $fontFormat: 'truetype';
+      } @else if ($fontExtension == 'otf') {
+        $fontFormat: 'opentype';
+      }
+
+      src: url('../fonts/#{$fontFile}.#{$fontExtension}') format($fontFormat);
     }
   }
 }
@@ -38,14 +46,14 @@ $fonts: (
     $fontWeight: nth($fontVariant, 2);
     $fontStyle: normal;
     $fontDisplay: swap;
-    $fontFormats: ['woff', 'woff2'];
+    $fontExtensions: ['woff', 'woff2'];
 
     @if length($fontVariant) == 3 {
       $fontStyle: nth($fontVariant, 3);
     } @else if length($fontVariant) == 4 {
       $fontDisplay: nth($fontVariant, 4);
     } @else if length($fontVariant) == 5 {
-      $fontFormats: nth($fontVariant, 5);
+      $fontExtensions: nth($fontVariant, 5);
     }
 
     @include font-face(
@@ -54,7 +62,7 @@ $fonts: (
       $fontWeight,
       $fontStyle,
       $fontDisplay,
-      $fontFormats
+      $fontExtensions
     );
   }
 }
